@@ -1,30 +1,42 @@
 import * as vscode from "vscode";
-import { getElementTypes } from "../registry";
+import { getElementTypes, getElementDefinition } from "../registry";
 import { commonPropertySnippets } from "../registry/commonProperties";
-import { GedContextType, resolveContextAtOffset } from "../parser/gedParser";
+import { GedContext, GedContextType, resolveContextAtOffset } from "../parser/gedParser";
 import { ElementDefinition, ParameterDefinition, ValueType } from "../registry/types";
 
 export class GedCompletionProvider implements vscode.CompletionItemProvider {
     provideCompletionItems(document: vscode.TextDocument, position: vscode.Position): vscode.CompletionItem[] {
         const context = resolveContextAtOffset(document.getText(), document.offsetAt(position));
 
+        console.log(`Section=${context.section}, isNewElement=${context.isNewElement}, Element=${context.currentElement?.type}`);
+
         //
         // TYPE
         //
         if (context.section === GedContextType.TYPE) {
+            vscode.window.showInformationMessage(JSON.stringify(getElementTypes()));
+
             return getElementTypes().map((type) => {
                 const item = new vscode.CompletionItem(type, vscode.CompletionItemKind.Class);
-
-                item.detail = "GED Element Type";
 
                 return item;
             });
         }
 
         //
+        // CHILDREN
+        //
+        if (context.section === GedContextType.CHILDREN) {
+            if (!context.currentElement?.definition) {
+                return [];
+            }
+
+            return createChildCompletions(context.currentElement.definition);
+        }
+
+        //
         // PARAMETERS
         //
-
         if (context.section === GedContextType.PARAMETERS && context.currentParameter) {
             return createParameterValueCompletions(context.currentParameter, document, position);
         }
@@ -41,7 +53,16 @@ export class GedCompletionProvider implements vscode.CompletionItemProvider {
         // ROOT
         //
         if (context.section === GedContextType.ROOT) {
-            return Object.keys(commonPropertySnippets).map((property) => {
+            let properties = Object.keys(commonPropertySnippets);
+
+            if (!context.isNewElement) {
+                const existingProperties =
+                    context.currentElement?.node.children?.map((property) => property.children?.[0]?.value as string) ?? [];
+
+                properties = properties.filter((property) => !existingProperties.includes(property));
+            }
+
+            return properties.map((property) => {
                 const item = new vscode.CompletionItem(property, vscode.CompletionItemKind.Property);
 
                 item.insertText = new vscode.SnippetString(commonPropertySnippets[property]);
@@ -133,4 +154,58 @@ function createParameterValueCompletions(
 function isInsideString(document: vscode.TextDocument, position: vscode.Position): boolean {
     const line = document.lineAt(position.line).text;
     return line.substring(0, position.character).endsWith('"');
+}
+
+function createChildCompletions(definition: ElementDefinition): vscode.CompletionItem[] {
+    return definition.allowedChildren.map((childType) => {
+        const item = new vscode.CompletionItem(childType, vscode.CompletionItemKind.Class);
+
+        const childDefinition = getElementDefinition(childType);
+
+        if (childDefinition) {
+            item.insertText = createElementSnippet(childDefinition);
+        }
+
+        return item;
+    });
+}
+
+function createElementSnippet(definition: ElementDefinition): vscode.SnippetString {
+    const lines = ["{", `    "type": "${definition.type}"`];
+
+    const requiredParameters = Object.entries(definition.parameters).filter(([, parameter]) => parameter.required);
+
+    if (requiredParameters.length > 0) {
+        lines[lines.length - 1] += ",";
+
+        lines.push('    "parameters": {');
+
+        requiredParameters.forEach(([name, parameter], index) => {
+            let value = `$${index + 1}`;
+
+            switch (parameter.type) {
+                case ValueType.STRING:
+                    value = `"${value}"`;
+                    break;
+
+                case ValueType.BOOLEAN:
+                    value = "false";
+                    break;
+
+                case ValueType.NUMBER:
+                    value = "0";
+                    break;
+            }
+
+            const comma = index < requiredParameters.length - 1 ? "," : "";
+
+            lines.push(`        "${name}": ${value}${comma}`);
+        });
+
+        lines.push("    }");
+    }
+
+    lines.push("}");
+
+    return new vscode.SnippetString(lines.join("\n"));
 }

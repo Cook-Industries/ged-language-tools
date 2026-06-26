@@ -9,6 +9,7 @@ export const BUTTON: ElementDefinition = {
         text: {
             type: ValueType.STRING,
             description: "Button text",
+            required: true,
         },
 
         btnClass: {

@@ -10,7 +10,9 @@
   "categories": [
     "Programming Languages"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onLanguage:json"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [],
