@@ -1,6 +1,6 @@
 import { Node, parseTree } from "jsonc-parser";
 import { ElementDefinition, ParameterDefinition } from "../registry/types";
-import { getElementDefinition } from "../registry";
+import { getElementDefinition } from "../registry/index";
 
 export enum GedContextType {
     ROOT = "root",

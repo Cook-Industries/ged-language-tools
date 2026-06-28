@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { parseTree, Node } from "jsonc-parser";
-import { getElementDefinition } from "../registry";
+import { getElementDefinition } from "../registry/index";
 import { ValueType } from "../registry/types";
 
 export function validateDocument(document: vscode.TextDocument, diagnostics: vscode.DiagnosticCollection): void {
