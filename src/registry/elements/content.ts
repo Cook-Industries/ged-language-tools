@@ -1,12 +1,16 @@
-import { ElementDefinition } from "../types";
+import { ElementDefinition, ValueType } from "../types";
 import { ElementType } from "../elementTypes";
+import { ELEMENT_SOURCE, REPETITION_SOURCE } from "../commonParameters";
 
 export const CONTENT: ElementDefinition = {
     type: "content",
 
     description: "Generic content container",
 
-    parameters: {},
+    parameters: {
+        repetitionSource: REPETITION_SOURCE,
+        elementSource: ELEMENT_SOURCE
+    },
 
     allowedChildren: [
         ElementType.AUDIO,
@@ -26,5 +30,5 @@ export const CONTENT: ElementDefinition = {
         ElementType.TEXT,
         ElementType.HEADING,
         ElementType.EMPTY
-    ],
+    ]
 };

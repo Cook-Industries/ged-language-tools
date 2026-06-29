@@ -13,6 +13,8 @@ export interface ParameterDefinition {
     enumValues?: Array<string | number | boolean>;
 
     isArray?: boolean;
+
+    conflictsWith?: ParameterDefinition[]
 }
 
 export interface ElementDefinition {

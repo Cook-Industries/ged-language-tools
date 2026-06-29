@@ -1,12 +1,16 @@
 import { ElementDefinition } from "../types";
 import { ElementType } from "../elementTypes";
+import { ELEMENT_SOURCE, REPETITION_SOURCE } from "../commonParameters";
 
 export const HIDDEN: ElementDefinition = {
     type: "hidden",
 
     description: "Generic content container but hidden",
 
-    parameters: {},
+    parameters: {
+        repetitionSource: REPETITION_SOURCE,
+        elementSource: ELEMENT_SOURCE
+    },
 
     allowedChildren: [
         ElementType.AUDIO,

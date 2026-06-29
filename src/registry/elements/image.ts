@@ -1,3 +1,4 @@
+import { ELEMENT_SOURCE, REPETITION_SOURCE, TOOLTIP } from "../commonParameters";
 import { ElementDefinition, ValueType } from "../types";
 
 export const IMAGE: ElementDefinition = {
@@ -12,10 +13,10 @@ export const IMAGE: ElementDefinition = {
             required: true
         },
 
-        tooltip: {
-            type: ValueType.BOOLEAN,
-            description: "onhover tooltip"
-        }
+        tooltip: TOOLTIP,
+
+        repetitionSource: REPETITION_SOURCE,
+        elementSource: ELEMENT_SOURCE
     },
 
     allowedChildren: []

@@ -1,3 +1,4 @@
+import { ELEMENT_SOURCE, REPETITION_SOURCE } from "../commonParameters";
 import { ElementType } from "../elementTypes";
 import { ElementDefinition, ValueType } from "../types";
 
@@ -25,7 +26,10 @@ export const FORM: ElementDefinition = {
                 "none",
                 "horizontal"
             ]
-        }
+        },
+
+        repetitionSource: REPETITION_SOURCE,
+        elementSource: ELEMENT_SOURCE
     },
 
     allowedChildren: [

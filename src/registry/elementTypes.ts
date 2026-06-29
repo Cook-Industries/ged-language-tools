@@ -14,6 +14,7 @@ export enum ElementType {
     SVG = "svg",
     TAB = "tab",
     TABLE = "table",
+    TABLE_ROW = "table_row",
     TEXT = "text",
     HEADING = "heading",
     EMPTY = "empty",
@@ -32,5 +33,9 @@ export enum ElementType {
     INPUT_TAG = "tag",
     INPUT_TEXTAREA = "textarea",
     INPUT_TEXTBOX = "textbox",
-    INPUT_TEXTFIELD = "textfield"
+    INPUT_TEXTFIELD = "textfield",
+    SVG_LINE = "line",
+    SVG_TEXT = "text",
+    SVG_GROUP = "group",
+    SVG_PATH = "path"
 }

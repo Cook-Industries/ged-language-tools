@@ -1,3 +1,4 @@
+import { ELEMENT_SOURCE, REPETITION_SOURCE } from "../commonParameters";
 import { ElementDefinition, ValueType } from "../types";
 
 export const AUDIO: ElementDefinition = {
@@ -22,7 +23,10 @@ export const AUDIO: ElementDefinition = {
             type: ValueType.BOOLEAN,
             description: "autoplay active",
             required: true
-        }
+        },
+
+        repetitionSource: REPETITION_SOURCE,
+        elementSource: ELEMENT_SOURCE
     },
 
     allowedChildren: []

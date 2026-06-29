@@ -1,3 +1,4 @@
+import { ELEMENT_SOURCE, REPETITION_SOURCE } from "../commonParameters";
 import { ElementDefinition, ValueType } from "../types";
 
 export const BUTTON_ICON: ElementDefinition = {
@@ -45,7 +46,10 @@ export const BUTTON_ICON: ElementDefinition = {
         title: {
             type: ValueType.STRING,
             description: "image alt text"
-        }
+        },
+
+        repetitionSource: REPETITION_SOURCE,
+        elementSource: ELEMENT_SOURCE
     },
 
     allowedChildren: []

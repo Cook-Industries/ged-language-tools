@@ -1,3 +1,4 @@
+import { ELEMENT_SOURCE, REPETITION_SOURCE } from "../commonParameters";
 import { ElementDefinition, ValueType } from "../types";
 
 export const BUTTON: ElementDefinition = {
@@ -35,7 +36,10 @@ export const BUTTON: ElementDefinition = {
                 "link",
                 "custom"
             ]
-        }
+        },
+
+        repetitionSource: REPETITION_SOURCE,
+        elementSource: ELEMENT_SOURCE
     },
 
     allowedChildren: []
