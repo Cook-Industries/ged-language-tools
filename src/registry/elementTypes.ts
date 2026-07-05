@@ -35,7 +35,8 @@ export enum ElementType {
     INPUT_TEXTBOX = "textbox",
     INPUT_TEXTFIELD = "textfield",
     SVG_LINE = "line",
-    SVG_TEXT = "text",
+    SVG_TEXT = "svg_text",
     SVG_GROUP = "group",
-    SVG_PATH = "path"
+    SVG_PATH = "path",
+    COMPONENT = "component"
 }

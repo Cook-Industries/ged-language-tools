@@ -48,6 +48,7 @@ export const FORM: ElementDefinition = {
         ElementType.INPUT_TAG,
         ElementType.INPUT_TEXTAREA,
         ElementType.INPUT_TEXTBOX,
-        ElementType.INPUT_TEXTFIELD
+        ElementType.INPUT_TEXTFIELD,
+        ElementType.COMPONENT
     ]
 };

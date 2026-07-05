@@ -16,6 +16,7 @@ import { TABBED } from "./elements/tabbed";
 import { TABLE } from "./elements/table";
 import { TABLE_ROW } from "./elements/table-row";
 import { TEXT } from "./elements/text";
+import { COMPONENT } from "./elements/component";
 
 export const elementRegistry: Record<string, ElementDefinition> = {
     audio: AUDIO,
@@ -34,7 +35,8 @@ export const elementRegistry: Record<string, ElementDefinition> = {
     tabbed: TABBED,
     table: TABLE,
     table_row: TABLE_ROW,
-    text: TEXT
+    text: TEXT,
+    component: COMPONENT
 };
 
 export function getElementDefinition(type: string): ElementDefinition | undefined {

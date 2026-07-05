@@ -35,7 +35,5 @@ export const BURGER_ITEM: ElementDefinition = {
         elementSource: ELEMENT_SOURCE
     },
 
-    allowedChildren: [
-        ElementType.BURGER_ITEM
-    ]
+    allowedChildren: []
 };

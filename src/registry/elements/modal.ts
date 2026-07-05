@@ -123,6 +123,7 @@ export const MODAL: ElementDefinition = {
         ElementType.LINK,
         ElementType.TEXT,
         ElementType.HEADING,
-        ElementType.TABLE
+        ElementType.TABLE,
+        ElementType.COMPONENT
     ]
 };

@@ -30,6 +30,7 @@ export const TABLE: ElementDefinition = {
     },
 
     allowedChildren: [
-        ElementType.TABLE_ROW
+        ElementType.TABLE_ROW,
+        ElementType.COMPONENT
     ]
 };

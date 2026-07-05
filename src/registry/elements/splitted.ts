@@ -42,6 +42,7 @@ export const SPLITTED: ElementDefinition = {
         ElementType.TABLE,
         ElementType.TEXT,
         ElementType.HEADING,
-        ElementType.EMPTY
+        ElementType.EMPTY,
+        ElementType.COMPONENT
     ]
 };

@@ -27,6 +27,7 @@ export const SVG: ElementDefinition = {
         ElementType.SVG_GROUP,
         ElementType.SVG_LINE,
         ElementType.SVG_PATH,
-        ElementType.SVG_TEXT
+        ElementType.SVG_TEXT,
+        ElementType.COMPONENT
     ]
 };

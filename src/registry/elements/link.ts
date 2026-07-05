@@ -25,6 +25,7 @@ export const LINK: ElementDefinition = {
 
     allowedChildren: [
         ElementType.IMAGE,
-        ElementType.TEXT
+        ElementType.TEXT,
+        ElementType.COMPONENT
     ]
 };

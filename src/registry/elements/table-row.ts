@@ -30,6 +30,7 @@ export const TABLE_ROW: ElementDefinition = {
         ElementType.SPLITTED,
         ElementType.SVG,
         ElementType.TEXT,
-        ElementType.EMPTY
+        ElementType.EMPTY,
+        ElementType.COMPONENT
     ]
 };

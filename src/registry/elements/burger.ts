@@ -18,6 +18,7 @@ export const BURGER: ElementDefinition = {
     },
 
     allowedChildren: [
-        ElementType.BURGER_ITEM
+        ElementType.BURGER_ITEM,
+        ElementType.COMPONENT
     ]
 };
