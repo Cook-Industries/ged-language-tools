@@ -1,6 +1,6 @@
-import { ELEMENT_SOURCE, REPETITION_SOURCE } from "../commonParameters";
-import { ElementType } from "../elementTypes";
-import { ElementDefinition, ValueType } from "../types";
+import { ELEMENT_SOURCE, REPETITION_SOURCE } from "../CommonParameters";
+import { ElementDefinition, ValueType } from "../ElementDefinitions";
+import { ElementTypes } from "../ElementTypes";
 
 export const BURGER: ElementDefinition = {
     type: "burger",
@@ -18,7 +18,7 @@ export const BURGER: ElementDefinition = {
     },
 
     allowedChildren: [
-        ElementType.BURGER_ITEM,
-        ElementType.COMPONENT
+        ElementTypes.SUBTYPE_BURGER_ITEM,
+        ElementTypes.CONTROL_COMPONENT
     ]
 };

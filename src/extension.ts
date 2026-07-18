@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
-import { GedCompletionProvider } from "./providers/completionProvider";
-import { validateDocument } from "./validation/validator";
+import { validateDocument } from "./providers/GedValidator";
+import { GedCompletionProvider } from "./providers/GedCompletionProvider";
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('"ged-language-tools" loaded.');
@@ -48,4 +48,4 @@ export function activate(context: vscode.ExtensionContext) {
     );
 }
 
-export function deactivate() {}
+export function deactivate() { }

@@ -1,6 +1,6 @@
-import { ElementDefinition, ValueType } from "../types";
-import { ElementType } from "../elementTypes";
-import { ELEMENT_SOURCE, REPETITION_SOURCE } from "../commonParameters";
+import { ELEMENT_SOURCE, REPETITION_SOURCE } from "../CommonParameters";
+import { ElementDefinition, ValueType } from "../ElementDefinitions";
+import { ElementTypes } from "../ElementTypes";
 
 export const TABLE: ElementDefinition = {
     type: "table",
@@ -30,7 +30,7 @@ export const TABLE: ElementDefinition = {
     },
 
     allowedChildren: [
-        ElementType.TABLE_ROW,
-        ElementType.COMPONENT
+        ElementTypes.SUBTYPE_TABLE_ROW,
+        ElementTypes.CONTROL_COMPONENT
     ]
 };

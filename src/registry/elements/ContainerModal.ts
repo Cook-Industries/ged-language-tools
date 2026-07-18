@@ -1,6 +1,6 @@
-import { ElementDefinition, ValueType } from "../types";
-import { ElementType } from "../elementTypes";
-import { ELEMENT_SOURCE } from "../commonParameters";
+import { ELEMENT_SOURCE } from "../CommonParameters";
+import { ElementDefinition, ValueType } from "../ElementDefinitions";
+import { ElementTypes } from "../ElementTypes";
 
 export const MODAL: ElementDefinition = {
     type: "modal",
@@ -118,12 +118,12 @@ export const MODAL: ElementDefinition = {
     },
 
     allowedChildren: [
-        ElementType.FORM,
-        ElementType.IMAGE,
-        ElementType.LINK,
-        ElementType.TEXT,
-        ElementType.HEADING,
-        ElementType.TABLE,
-        ElementType.COMPONENT
+        ElementTypes.CONTAINER_FORM,
+        ElementTypes.CONTAINER_IMAGE,
+        ElementTypes.CONTAINER_LINK,
+        ElementTypes.CONTAINER_TEXT,
+        ElementTypes.CONTAINER_HEADING,
+        ElementTypes.CONTAINER_TABLE,
+        ElementTypes.CONTROL_COMPONENT
     ]
 };

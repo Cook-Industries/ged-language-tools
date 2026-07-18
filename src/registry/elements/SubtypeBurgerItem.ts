@@ -1,6 +1,6 @@
-import { ELEMENT_SOURCE, REPETITION_SOURCE } from "../commonParameters";
-import { ElementType } from "../elementTypes";
-import { ElementDefinition, ValueType } from "../types";
+import { ELEMENT_SOURCE, REPETITION_SOURCE } from "../CommonParameters";
+import { ElementDefinition, ValueType } from "../ElementDefinitions";
+import { ElementTypes } from "../ElementTypes";
 
 export const BURGER_ITEM: ElementDefinition = {
     type: "burger_item",

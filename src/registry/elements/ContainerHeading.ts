@@ -1,6 +1,5 @@
-import { ElementDefinition, ValueType } from "../types";
-import { ElementType } from "../elementTypes";
-import { ELEMENT_SOURCE, REPETITION_SOURCE, TOOLTIP } from "../commonParameters";
+import { ELEMENT_SOURCE, REPETITION_SOURCE, TOOLTIP } from "../CommonParameters";
+import { ElementDefinition, ValueType } from "../ElementDefinitions";
 
 export const HEADING: ElementDefinition = {
     type: "heading",

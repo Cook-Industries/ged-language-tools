@@ -1,4 +1,9 @@
-import { ValueType, ParameterDefinition } from "./types";
+import { ParameterDefinition, ValueType } from "./ElementDefinitions";
+
+export const uidParam: ParameterDefinition = {
+    type: ValueType.STRING,
+    description: "the uid for this element"
+};
 
 export const TOOLTIP: ParameterDefinition = {
     type: ValueType.STRING,

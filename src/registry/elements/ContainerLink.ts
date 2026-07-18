@@ -1,6 +1,6 @@
-import { ElementDefinition, ValueType } from "../types";
-import { ElementType } from "../elementTypes";
-import { ELEMENT_SOURCE, REPETITION_SOURCE } from "../commonParameters";
+import { ELEMENT_SOURCE, REPETITION_SOURCE } from "../CommonParameters";
+import { ElementDefinition, ValueType } from "../ElementDefinitions";
+import { ElementTypes } from "../ElementTypes";
 
 export const LINK: ElementDefinition = {
     type: "link",
@@ -24,8 +24,8 @@ export const LINK: ElementDefinition = {
     },
 
     allowedChildren: [
-        ElementType.IMAGE,
-        ElementType.TEXT,
-        ElementType.COMPONENT
+        ElementTypes.CONTAINER_IMAGE,
+        ElementTypes.CONTAINER_TEXT,
+        ElementTypes.CONTROL_COMPONENT
     ]
 };

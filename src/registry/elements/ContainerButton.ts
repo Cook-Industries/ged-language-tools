@@ -1,5 +1,5 @@
-import { ELEMENT_SOURCE, REPETITION_SOURCE } from "../commonParameters";
-import { ElementDefinition, ValueType } from "../types";
+import { ELEMENT_SOURCE, REPETITION_SOURCE } from "../CommonParameters";
+import { ElementDefinition, ValueType } from "../ElementDefinitions";
 
 export const BUTTON: ElementDefinition = {
     type: "button",

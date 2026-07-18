@@ -1,0 +1,216 @@
+{
+    "uid": "login-modal",
+    "type": "MODAL",
+    "parameters": {
+        "name": "TEST MODAL",
+        "formId": "login-form",
+        "requestUrl": "/dummy3",
+        "btnNameCenter": "reset",
+        "btnFunctionCenter": "$$function$reset"
+    },
+    "children": [
+        {
+            "type": "table",
+            "parameters": {
+                "name": "test-table",
+                "numOfColumns": "3",
+                "columnNames": "row 1||row 2||row 3"
+            },
+            "children": [
+                {
+                    "type": "table_row",
+                    "parameters": {
+                        "tableName": "test-table"
+                    },
+                    "children": [
+                        {
+                            "type": "text",
+                            "parameters": {
+                                "text": "$$value$test-int",
+                                "inline": "true",
+                                "tooltip": "test this shit!"
+                            }
+                        },
+                        {
+                            "type": "burger",
+                            "children": [
+                                {
+                                    "type": "item",
+                                    "parameters": {
+                                        "icon": "bi-bootstrap-reboot",
+                                        "url": "/info/user-name",
+                                        "text": "edit",
+                                        "method": "DELETE"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "type": "burger",
+                            "children": [
+                                {
+                                    "type": "item",
+                                    "parameters": {
+                                        "icon": "bi-bootstrap-reboot",
+                                        "url": "/info/user-name",
+                                        "text": "edit",
+                                        "method": "PUT"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "COMPONENT",
+                    "parameters": {
+                        "path": "row.json"
+                    }
+                }
+            ]
+        },
+        {
+            "uid": "login-form",
+            "type": "form",
+            "parameters": {
+                "direction": "vertical"
+            },
+            "children": [
+                {
+                    "uid": "user-name",
+                    "type": "textfield",
+                    "parameters": {
+                        "name": "Username",
+                        "submitAs": "username",
+                        "placeholder": "user@rittal.de",
+                        "tooltip": "test tooltip",
+                        "infoText": "click-me",
+                        "infoUrl": "/info/user-name",
+                        "disabled": true,
+                        "value": "$$value$number-field-id"
+                    },
+                    "marker": [
+                        {
+                            "category": "error",
+                            "type": "empty",
+                            "text": "test error"
+                        }
+                    ]
+                },
+                {
+                    "type": "tag",
+                    "parameters": {
+                        "name": "tag-input",
+                        "submitAs": "tags",
+                        "enforceWhitelist": "true",
+                        "fetchUrl": "/tags/fetch",
+                        "searchUrl": "/tags/search"
+                    }
+                },
+                {
+                    "uid": "user-area",
+                    "type": "textarea",
+                    "parameters": {
+                        "name": "Username",
+                        "submitAs": "textarea",
+                        "placeholder": "user@rittal.de",
+                        "tooltip": "test tooltip"
+                    },
+                    "marker": [
+                        {
+                            "category": "error",
+                            "type": "empty",
+                            "text": "test error"
+                        }
+                    ]
+                },
+                {
+                    "uid": "$$value$number-field-id",
+                    "type": "number",
+                    "attributes": {
+                        "$$value$attribute-test": "$$value$number-field-id"
+                    },
+                    "parameters": {
+                        "name": "Number Test",
+                        "submitAs": "number",
+                        "placeholder": "0",
+                        "onEnterPress": "login-modal-right-btn"
+                    },
+                    "marker": [
+                        {
+                            "category": "error",
+                            "type": "OUT_OF_RANGE",
+                            "text": "not in range 1 >= value <= 5"
+                        }
+                    ]
+                },
+                {
+                    "type": "CHECKBOX",
+                    "classes": [],
+                    "attributes": {},
+                    "parameters": {
+                        "name": "legend",
+                        "submitAs": "checkbox",
+                        "infoText": "click-me"
+                    },
+                    "children": [
+                        {
+                            "type": "INPUT_VALUE",
+                            "parameters": {
+                                "text": "checkbox 1",
+                                "value": "1"
+                            }
+                        },
+                        {
+                            "type": "INPUT_VALUE",
+                            "parameters": {
+                                "text": "checkbox 2",
+                                "value": "2"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "uid": "files",
+                    "type": "file",
+                    "parameters": {
+                        "processElement": "$$value$show-file",
+                        "name": "files",
+                        "submitAs": "files",
+                        "multiple": "false",
+                        "accept": ".pdf",
+                        "infoText": "$$text$files-motherfucker"
+                    }
+                },
+                {
+                    "uid": "login-select",
+                    "type": "select",
+                    "parameters": {
+                        "name": "select",
+                        "submitAs": "select"
+                    },
+                    "children": [
+                        {
+                            "type": "INPUT_VALUE",
+                            "classes": [],
+                            "parameters": {
+                                "text": "test select 1",
+                                "value": "test value",
+                                "checked": "false"
+                            }
+                        },
+                        {
+                            "type": "INPUT_VALUE",
+                            "classes": [],
+                            "parameters": {
+                                "text": "$$text$test_name",
+                                "value": "test value",
+                                "checked": "true"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

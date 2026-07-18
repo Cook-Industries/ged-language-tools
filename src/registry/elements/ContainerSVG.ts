@@ -1,7 +1,6 @@
-import { ElementDefinition, ValueType } from "../types";
-import { ElementType } from "../elementTypes";
-import { ELEMENT_SOURCE, REPETITION_SOURCE } from "../commonParameters";
-
+import { ELEMENT_SOURCE, REPETITION_SOURCE } from "../CommonParameters";
+import { ElementDefinition, ValueType } from "../ElementDefinitions";
+import { ElementTypes } from "../ElementTypes";
 
 export const SVG: ElementDefinition = {
     type: "svg",
@@ -24,10 +23,10 @@ export const SVG: ElementDefinition = {
     },
 
     allowedChildren: [
-        ElementType.SVG_GROUP,
-        ElementType.SVG_LINE,
-        ElementType.SVG_PATH,
-        ElementType.SVG_TEXT,
-        ElementType.COMPONENT
+        // ElementTypes.SVG_GROUP,
+        // ElementTypes.SVG_LINE,
+        // ElementTypes.SVG_PATH,
+        ElementTypes.SVG_TEXT,
+        ElementTypes.CONTROL_COMPONENT
     ]
 };

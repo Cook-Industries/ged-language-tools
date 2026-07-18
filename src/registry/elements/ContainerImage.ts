@@ -1,5 +1,5 @@
-import { ELEMENT_SOURCE, REPETITION_SOURCE, TOOLTIP } from "../commonParameters";
-import { ElementDefinition, ValueType } from "../types";
+import { ELEMENT_SOURCE, REPETITION_SOURCE, TOOLTIP } from "../CommonParameters";
+import { ElementDefinition, ValueType } from "../ElementDefinitions";
 
 export const IMAGE: ElementDefinition = {
     type: "image",

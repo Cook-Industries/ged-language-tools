@@ -1,0 +1,474 @@
+import * as vscode from "vscode";
+import * as json from "jsonc-parser";
+
+import { ElementDefinition, ParameterDefinition, ValueType } from "../registry/ElementDefinitions";
+import { TypeRegistry } from "../registry/ElementTypes";
+
+
+export function validateDocument(
+    document: vscode.TextDocument,
+    diagnostics: vscode.DiagnosticCollection,
+): void {
+
+    const errors: vscode.Diagnostic[] = [];
+
+    const parseErrors: json.ParseError[] = [];
+
+    const root = json.parseTree(
+        document.getText(),
+        parseErrors,
+    );
+
+
+    //
+    // JSON parsing errors
+    //
+    for (const error of parseErrors) {
+        addDiagnostic(
+            document,
+            errors,
+            {
+                offset: error.offset,
+                length: error.length,
+            } as json.Node,
+            json.printParseErrorCode(error.error),
+        );
+    }
+
+
+    if (!root) {
+        diagnostics.set(document.uri, errors);
+        return;
+    }
+
+
+    //
+    // ROOT RESOLUTION
+    //
+    const rootType =
+        getProperty(root, "type")?.children?.[1];
+
+
+    if (rootType?.type === "string") {
+
+        const rootDefinition =
+            findDefinition(rootType.value as string);
+
+
+        if (!rootDefinition) {
+
+            addDiagnostic(
+                document,
+                errors,
+                rootType,
+                `Root type "${rootType.value}" not found in TypeRegistry.`,
+            );
+
+        } else {
+
+            //
+            // Root itself is resolved.
+            // Now validate its children using ONLY
+            // the root's allowedChildren list.
+            //
+            const rootChildren =
+                resolveAllowedChildren(rootDefinition);
+
+
+            const childrenNode =
+                getProperty(root, "children")?.children?.[1];
+
+
+            if (childrenNode?.type === "array") {
+
+                for (const child of childrenNode.children ?? []) {
+
+                    validateTree(
+                        child,
+                        rootChildren,
+                        document,
+                        errors,
+                    );
+                }
+            }
+        }
+    }
+
+
+    diagnostics.set(
+        document.uri,
+        errors,
+    );
+}
+
+/**
+ * Add VS Code diagnostic.
+ */
+function addDiagnostic(
+    document: vscode.TextDocument,
+    diagnostics: vscode.Diagnostic[],
+    node: json.Node,
+    message: string,
+): void {
+
+    diagnostics.push(
+        new vscode.Diagnostic(
+            new vscode.Range(
+                document.positionAt(node.offset),
+                document.positionAt(
+                    node.offset + node.length,
+                ),
+            ),
+            message,
+            vscode.DiagnosticSeverity.Error,
+        ),
+    );
+}
+
+
+function validateTree(
+    node: json.Node,
+    possibleDefinitions: ElementDefinition[],
+    document: vscode.TextDocument,
+    diagnostics: vscode.Diagnostic[],
+): void {
+
+    const typeNode =
+        getProperty(node, "type")?.children?.[1];
+
+    if (!typeNode || typeNode.type !== "string") {
+        return;
+    }
+
+
+    const nodeType = typeNode.value as string;
+
+
+    //
+    // Resolve this node ONLY against the list supplied by parent
+    //
+    const definition =
+        possibleDefinitions.find(
+            def => def.type === nodeType,
+        );
+
+
+    if (!definition) {
+
+        addDiagnostic(
+            document,
+            diagnostics,
+            typeNode,
+            `Type "${nodeType}" is not allowed here. Allowed types: [${possibleDefinitions
+                .map(d => d.type)
+                .join(", ")}]`,
+        );
+
+        return;
+    }
+
+    //
+    // Node is resolved.
+    // Validate its parameters using this definition.
+    //
+    validateParameters(
+        node,
+        definition,
+        document,
+        diagnostics,
+    );
+
+
+    //
+    // This node is now resolved.
+    // Generate the list valid ONLY for its direct children.
+    //
+    const childDefinitions =
+        resolveAllowedChildren(definition);
+
+
+    const childrenNode =
+        getProperty(node, "children")?.children?.[1];
+
+
+    if (!childrenNode || childrenNode.type !== "array") {
+        return;
+    }
+
+
+    //
+    // Push this node's child list down one level
+    //
+    for (const child of childrenNode.children ?? []) {
+
+        validateTree(
+            child,
+            childDefinitions,
+            document,
+            diagnostics,
+        );
+    }
+}
+
+/**
+ * Find a type definition exactly like GedParser did.
+ */
+function findDefinition(
+    type: string,
+): ElementDefinition | undefined {
+
+    for (const key in TypeRegistry) {
+
+        const definition =
+            TypeRegistry[key];
+
+        if (definition.type === type) {
+            return definition;
+        }
+    }
+
+    return undefined;
+}
+
+
+/**
+ * Resolve enum IDs from allowedChildren
+ * into actual ElementDefinitions.
+ */
+function resolveAllowedChildren(
+    definition: ElementDefinition,
+): ElementDefinition[] {
+
+    const result: ElementDefinition[] = [];
+
+    for (const enumId of definition.allowedChildren) {
+
+        const childDefinition = TypeRegistry[enumId];
+
+        if (childDefinition) {
+            result.push(childDefinition);
+        }
+    }
+
+    return result;
+}
+
+
+/**
+ * Find an object property node.
+ */
+function getProperty(
+    node: json.Node,
+    name: string,
+): json.Node | undefined {
+
+    if (node.type !== "object") {
+        return undefined;
+    }
+
+
+    return node.children?.find(
+        child =>
+            child.type === "property" &&
+            child.children?.[0]?.value === name,
+    );
+}
+
+function validateParameters(
+    node: json.Node,
+    definition: ElementDefinition,
+    document: vscode.TextDocument,
+    diagnostics: vscode.Diagnostic[],
+): void {
+
+    const parametersNode =
+        getProperty(node, "parameters")?.children?.[1];
+
+
+    //
+    // Missing parameters object
+    //
+    if (!parametersNode || parametersNode.type !== "object") {
+
+        for (const [name, parameter] of Object.entries(definition.parameters)) {
+
+            if (parameter.required) {
+                addDiagnostic(
+                    document,
+                    diagnostics,
+                    node,
+                    `Missing required parameter "${name}" for type "${definition.type}".`,
+                );
+            }
+        }
+
+        return;
+    }
+
+
+    const existingParameters = new Map<
+        string,
+        {
+            nameNode: json.Node;
+            valueNode: json.Node;
+        }
+    >();
+
+    for (const property of parametersNode.children ?? []) {
+
+        const nameNode = property.children?.[0];
+        const valueNode = property.children?.[1];
+
+        if (!nameNode || !valueNode) {
+            continue;
+        }
+
+        existingParameters.set(
+            nameNode.value as string,
+            {
+                nameNode,
+                valueNode,
+            },
+        );
+    }
+
+    //
+    // Unknown parameter check
+    //
+    for (const [name, nodes] of existingParameters) {
+
+        if (!definition.parameters[name]) {
+
+            addDiagnostic(
+                document,
+                diagnostics,
+                nodes.nameNode,
+                `Unknown parameter "${name}" for type "${definition.type}".`,
+            );
+        }
+    }
+
+
+    //
+    // Validate declared parameters
+    //
+    for (const [name, paramDef] of Object.entries(definition.parameters)) {
+
+        const entry = existingParameters.get(name);
+
+        const valueNode = entry?.valueNode;
+
+        //
+        // Required check
+        //
+        if (!valueNode) {
+
+            if (paramDef.required) {
+
+                addDiagnostic(
+                    document,
+                    diagnostics,
+                    parametersNode,
+                    `Missing required parameter "${name}".`,
+                );
+            }
+
+            continue;
+        }
+
+
+        validateParameterValue(
+            name,
+            valueNode,
+            paramDef,
+            document,
+            diagnostics,
+        );
+    }
+}
+
+function validateParameterValue(
+    name: string,
+    node: json.Node,
+    definition: ParameterDefinition,
+    document: vscode.TextDocument,
+    diagnostics: vscode.Diagnostic[],
+): void {
+
+
+    //
+    // Array validation
+    //
+    if (definition.isArray) {
+
+        if (node.type !== "array") {
+
+            addDiagnostic(
+                document,
+                diagnostics,
+                node,
+                `Parameter "${name}" must be an array.`,
+            );
+
+            return;
+        }
+
+    } else {
+
+        if (!matchesType(node, definition.type)) {
+
+            addDiagnostic(
+                document,
+                diagnostics,
+                node,
+                `Parameter "${name}" must be of type "${definition.type}".`,
+            );
+
+            return;
+        }
+    }
+
+
+    //
+    // Enum validation
+    //
+    if (definition.enumValues) {
+
+        const value = node.value;
+
+
+        if (!definition.enumValues.includes(value)) {
+
+            addDiagnostic(
+                document,
+                diagnostics,
+                node,
+                `Invalid value "${value}" for "${name}". Allowed values: [${definition.enumValues.join(", ")}]`,
+            );
+        }
+    }
+}
+
+function matchesType(
+    node: json.Node,
+    type: ValueType,
+): boolean {
+
+    switch (type) {
+
+        case ValueType.STRING:
+            return node.type === "string";
+
+
+        case ValueType.NUMBER:
+            return node.type === "number";
+
+
+        case ValueType.BOOLEAN:
+            return node.type === "boolean";
+
+
+        default:
+            return false;
+    }
+}
