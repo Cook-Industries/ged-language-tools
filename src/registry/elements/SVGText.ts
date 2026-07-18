@@ -1,10 +1,17 @@
 import { ELEMENT_SOURCE, REPETITION_SOURCE, TOOLTIP } from "../CommonParameters";
+import { ATTRIBUTES_PROPERTY, CLASSES_PROPERTY, UID_PROPERTY } from "../CommonProperties";
 import { ElementDefinition, ValueType } from "../ElementDefinitions";
 
 export const SVG_TEXT: ElementDefinition = {
     type: "text",
 
     description: "SVG text",
+
+    properties: {
+        uid: UID_PROPERTY,
+        classes: CLASSES_PROPERTY,
+        attributes: ATTRIBUTES_PROPERTY
+    },
 
     parameters: {
         text: {

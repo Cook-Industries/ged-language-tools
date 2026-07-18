@@ -1,9 +1,14 @@
+import { DISABLED_CHILDREN_PROPERTY } from "../CommonProperties";
 import { ElementDefinition, ValueType } from "../ElementDefinitions";
 
 export const COMPONENT: ElementDefinition = {
     type: "component",
 
     description: "linkable source component",
+
+    properties: {
+        DISABLED_CHILDREN_PROPERTY
+    },
 
     parameters: {
         path: {

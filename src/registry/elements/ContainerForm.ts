@@ -1,19 +1,21 @@
 import { ELEMENT_SOURCE, REPETITION_SOURCE } from "../CommonParameters";
+import { ATTRIBUTES_PROPERTY, CLASSES_PROPERTY, UID_PROPERTY } from "../CommonProperties";
 import { ElementDefinition, ValueType } from "../ElementDefinitions";
 import { ElementTypes } from "../ElementTypes";
+import { Direction } from "./Direction";
 
 export const FORM: ElementDefinition = {
     type: "form",
 
     description: "Form",
 
-    parameters: {
-        text: {
-            type: ValueType.STRING,
-            description: "Button text",
-            required: true
-        },
+    properties: {
+        uid: UID_PROPERTY,
+        classes: CLASSES_PROPERTY,
+        attributes: ATTRIBUTES_PROPERTY
+    },
 
+    parameters: {
         connectedBtn: {
             type: ValueType.STRING,
             description: "uid of connected button"
@@ -23,8 +25,8 @@ export const FORM: ElementDefinition = {
             type: ValueType.STRING,
             description: "direction",
             enumValues: [
-                "none",
-                "horizontal"
+                Direction.NONE,
+                Direction.HORIZONTAL
             ]
         },
 

@@ -1,4 +1,5 @@
 import { ELEMENT_SOURCE, REPETITION_SOURCE } from "../CommonParameters";
+import { ATTRIBUTES_PROPERTY, CLASSES_PROPERTY, UID_PROPERTY } from "../CommonProperties";
 import { ElementDefinition } from "../ElementDefinitions";
 import { ElementTypes } from "../ElementTypes";
 
@@ -6,6 +7,12 @@ export const HIDDEN: ElementDefinition = {
     type: "hidden",
 
     description: "Generic content container but hidden",
+
+    properties: {
+        uid: UID_PROPERTY,
+        classes: CLASSES_PROPERTY,
+        attributes: ATTRIBUTES_PROPERTY
+    },
 
     parameters: {
         repetitionSource: REPETITION_SOURCE,

@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import * as json from "jsonc-parser";
 
-import { ElementDefinition, ParameterDefinition, ValueType } from "../registry/ElementDefinitions";
+import { ElementDefinition, ParameterDefinition, PropertyState, SYSTEM_FIELDS, ValueType } from "../registry/ElementDefinitions";
 import { TypeRegistry } from "../registry/ElementTypes";
 
 
@@ -179,7 +179,7 @@ function validateTree(
     //
     const definition =
         possibleDefinitions.find(
-            def => def.type === nodeType,
+            def => def.type.toLowerCase() === nodeType.toLowerCase()
         );
 
 
@@ -199,8 +199,15 @@ function validateTree(
 
     //
     // Node is resolved.
-    // Validate its parameters using this definition.
+    // Validate properties and parameters using this definition.
     //
+    validateProperties(
+        node,
+        definition,
+        document,
+        diagnostics,
+    );
+
     validateParameters(
         node,
         definition,
@@ -252,7 +259,7 @@ function findDefinition(
         const definition =
             TypeRegistry[key];
 
-        if (definition.type === type) {
+        if (definition.type.toLowerCase() === type.toLowerCase()) {
             return definition;
         }
     }
@@ -302,6 +309,120 @@ function getProperty(
             child.type === "property" &&
             child.children?.[0]?.value === name,
     );
+}
+
+function validateProperties(
+    node: json.Node,
+    definition: ElementDefinition,
+    document: vscode.TextDocument,
+    diagnostics: vscode.Diagnostic[],
+): void {
+
+    if (node.type !== "object") {
+        return;
+    }
+
+
+    const existingProperties = new Set<string>();
+
+
+    for (const property of node.children ?? []) {
+
+        const nameNode = property.children?.[0];
+
+        if (!nameNode) {
+            continue;
+        }
+
+
+        const name = nameNode.value as string;
+
+        //
+        // Ignore GED structural fields
+        //
+        if (SYSTEM_FIELDS.has(name)) {
+            continue;
+        }
+
+        existingProperties.add(name);
+
+
+        const propertyDefinition =
+            definition.properties[name];
+
+
+        //
+        // Unknown property
+        //
+        if (!propertyDefinition) {
+
+            addDiagnostic(
+                document,
+                diagnostics,
+                nameNode,
+                `Unknown property "${name}" for type "${definition.type}".`,
+            );
+
+            continue;
+        }
+
+
+        //
+        // Disabled property
+        //
+        if (
+            propertyDefinition.state === PropertyState.DISABLED
+        ) {
+
+            addDiagnostic(
+                document,
+                diagnostics,
+                nameNode,
+                `Property "${name}" is not allowed for type "${definition.type}".`,
+            );
+
+            continue;
+        }
+
+
+        //
+        // Type validation
+        //
+        const valueNode = property.children?.[1];
+
+        if (valueNode) {
+
+            if (!matchesType(valueNode, propertyDefinition.type)) {
+
+                addDiagnostic(
+                    document,
+                    diagnostics,
+                    valueNode,
+                    `Property "${name}" must be of type "${propertyDefinition.type}".`,
+                );
+            }
+        }
+    }
+
+
+    //
+    // Required property check
+    //
+    for (const [name, propertyDefinition] of Object.entries(definition.properties)) {
+
+        if (
+            propertyDefinition.state === PropertyState.REQUIRED &&
+            !existingProperties.has(name)
+        ) {
+
+            addDiagnostic(
+                document,
+                diagnostics,
+                node,
+                `Missing required property "${name}" for type "${definition.type}".`,
+            );
+        }
+    }
 }
 
 function validateParameters(
