@@ -378,6 +378,53 @@ function validateParameters(
         }
     }
 
+    //
+    // Conflict validation
+    //
+    for (const [name, parameterDefinition] of Object.entries(definition.parameters)) {
+
+        const currentParameter =
+            existingParameters.has(name);
+
+        if (!currentParameter) {
+            continue;
+        }
+
+
+        if (!parameterDefinition.conflictsWith) {
+            continue;
+        }
+
+
+        for (const conflict of parameterDefinition.conflictsWith) {
+
+            const conflictingParameter =
+                Object.entries(definition.parameters)
+                    .find(
+                        ([, parameter]) =>
+                            parameter === conflict,
+                    )?.[0];
+
+
+            if (
+                conflictingParameter &&
+                existingParameters.has(conflictingParameter)
+            ) {
+
+                const node =
+                    existingParameters.get(name)!.nameNode;
+
+
+                addDiagnostic(
+                    document,
+                    diagnostics,
+                    node,
+                    `Parameter "${name}" conflicts with "${conflictingParameter}".`,
+                );
+            }
+        }
+    }
+
 
     //
     // Validate declared parameters
