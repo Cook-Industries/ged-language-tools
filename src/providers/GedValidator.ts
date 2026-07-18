@@ -10,13 +10,13 @@ export function validateDocument(
     diagnostics: vscode.DiagnosticCollection,
 ): void {
 
-    const errors: vscode.Diagnostic[] = [];
 
+    const errors: vscode.Diagnostic[] = [];
     const parseErrors: json.ParseError[] = [];
 
     const root = json.parseTree(
         document.getText(),
-        parseErrors,
+        parseErrors
     );
 
 
@@ -31,7 +31,7 @@ export function validateDocument(
                 offset: error.offset,
                 length: error.length,
             } as json.Node,
-            json.printParseErrorCode(error.error),
+            json.printParseErrorCode(error.error)
         );
     }
 
@@ -40,6 +40,15 @@ export function validateDocument(
         diagnostics.set(document.uri, errors);
         return;
     }
+
+
+    const filePath = document.uri.fsPath;
+
+    validateFileLocation(
+        document,
+        root,
+        errors
+    );
 
 
     //
@@ -109,6 +118,7 @@ function addDiagnostic(
     diagnostics: vscode.Diagnostic[],
     node: json.Node,
     message: string,
+    severity: vscode.DiagnosticSeverity = vscode.DiagnosticSeverity.Error,
 ): void {
 
     diagnostics.push(
@@ -120,9 +130,29 @@ function addDiagnostic(
                 ),
             ),
             message,
-            vscode.DiagnosticSeverity.Error,
+            severity,
         ),
     );
+}
+
+function validateFileLocation(
+    document: vscode.TextDocument,
+    root: json.Node,
+    diagnostics: vscode.Diagnostic[],
+): void {
+
+    const filePath = document.uri.fsPath.replace(/\\/g, "/");
+
+    if (!filePath.includes("/resources/templates/")) {
+
+        addDiagnostic(
+            document,
+            diagnostics,
+            root,
+            `GED files should be located inside "/resources/templates/".`,
+            vscode.DiagnosticSeverity.Warning,
+        );
+    }
 }
 
 
