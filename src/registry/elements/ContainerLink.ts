@@ -23,7 +23,8 @@ export const LINK: ElementDefinition = {
 
         target: {
             type: ValueType.STRING,
-            description: "link open target"
+            description: "link open in target",
+            enumValues: ["_blank", "_parent", "_self", "_top"]
         },
 
         repetitionSource: REPETITION_SOURCE,

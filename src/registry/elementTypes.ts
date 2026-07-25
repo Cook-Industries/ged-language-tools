@@ -19,6 +19,23 @@ import { SVG_TEXT } from "./elements/SVGText";
 import { TABLE } from "./elements/ContainerTable";
 import { TABLE_ROW } from "./elements/SubtypeTableRow";
 import { BUTTON } from "./elements/ContainerButton";
+import { INPUT_CHECKBOX } from "./elements/InputCheckbox";
+import { INPUT_CURRENCY } from "./elements/InputCurrency";
+import { INPUT_TEXTFIELD } from "./elements/InputTextfield";
+import { INPUT_VALUE } from "./elements/SubtypeInputValue";
+import { INPUT_DATE } from "./elements/InputDate";
+import { INPUT_FILE } from "./elements/InputFile";
+import { INPUT_HIDDEN } from "./elements/InputHidden";
+import { INPUT_LINK } from "./elements/InputLink";
+import { INPUT_NUMBER } from "./elements/InputNumber";
+import { INPUT_PASSWORD } from "./elements/InputPassword";
+import { INPUT_RADIO } from "./elements/InputRadio";
+import { INPUT_SELECT } from "./elements/InputSelect";
+import { INPUT_SLIDER } from "./elements/InputSlider";
+import { INPUT_SWITCH } from "./elements/InputSwitch";
+import { INPUT_TAG } from "./elements/InputTag";
+import { INPUT_TEXTAREA } from "./elements/InputTextarea";
+import { INPUT_TEXTBOX } from "./elements/InputTextbox";
 
 export enum ElementTypes {
     CONTAINER_AUDIO = "container-audio",
@@ -40,7 +57,24 @@ export enum ElementTypes {
     SVG_TEXT = "svg-text",
     CONTAINER_TABLE = "container-table",
     SUBTYPE_TABLE_ROW = "subtype-table-row",
-    CONTAINER_BUTTON = "container-button"
+    CONTAINER_BUTTON = "container-button",
+    SUBTYPE_INPUT_VALUE = "subtype-input-value",
+    INPUT_CHECKBOX = "input-checkbox",
+    INPUT_CURRENCY = "input-currency",
+    INPUT_DATE = "input-date",
+    INPUT_FILE = "input-file",
+    INPUT_HIDDEN = "input-hidden",
+    INPUT_LINK = "input-link",
+    INPUT_NUMBER = "input-number",
+    INPUT_PASSWORD = "input-password",
+    INPUT_RADIO = "input-radio",
+    INPUT_SELECT = "input-select",
+    INPUT_SLIDER = "input-slider",
+    INPUT_SWITCH = "input-switch",
+    INPUT_TAG = "input-tag",
+    INPUT_TEXTAREA = "input-textarea",
+    INPUT_TEXTBOX = "input-textbox",
+    INPUT_TEXTFIELD = "input-textfield"
 }
 
 export const TypeRegistry: Record<string, ElementDefinition> = {
@@ -83,4 +117,22 @@ export const TypeRegistry: Record<string, ElementDefinition> = {
     [ElementTypes.SUBTYPE_TABLE_ROW]: TABLE_ROW,
 
     [ElementTypes.CONTAINER_BUTTON]: BUTTON,
+    [ElementTypes.INPUT_CHECKBOX]: INPUT_CHECKBOX,
+    [ElementTypes.INPUT_CURRENCY]: INPUT_CURRENCY,
+    [ElementTypes.INPUT_DATE]: INPUT_DATE,
+    [ElementTypes.INPUT_FILE]: INPUT_FILE,
+    [ElementTypes.INPUT_HIDDEN]: INPUT_HIDDEN,
+    [ElementTypes.INPUT_LINK]: INPUT_LINK,
+    [ElementTypes.INPUT_NUMBER]: INPUT_NUMBER,
+    [ElementTypes.INPUT_PASSWORD]: INPUT_PASSWORD,
+    [ElementTypes.INPUT_RADIO]: INPUT_RADIO,
+    [ElementTypes.INPUT_SELECT]: INPUT_SELECT,
+    [ElementTypes.INPUT_SLIDER]: INPUT_SLIDER,
+    [ElementTypes.INPUT_SWITCH]: INPUT_SWITCH,
+    [ElementTypes.INPUT_TAG]: INPUT_TAG,
+    [ElementTypes.INPUT_TEXTAREA]: INPUT_TEXTAREA,
+    [ElementTypes.INPUT_TEXTBOX]: INPUT_TEXTBOX,
+    [ElementTypes.INPUT_TEXTFIELD]: INPUT_TEXTFIELD,
+    [ElementTypes.SUBTYPE_INPUT_VALUE]: INPUT_VALUE,
+
 };

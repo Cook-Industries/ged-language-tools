@@ -3,6 +3,7 @@ import * as json from "jsonc-parser";
 
 import { ElementDefinition, ParameterDefinition, PropertyState, SYSTEM_FIELDS, ValueType } from "../registry/ElementDefinitions";
 import { TypeRegistry } from "../registry/ElementTypes";
+import { parseReplacementValue } from "../registry/ReplacementValue";
 
 
 export function validateDocument(
@@ -392,7 +393,8 @@ function validateProperties(
 
         if (valueNode) {
 
-            if (!matchesType(valueNode, propertyDefinition.type)) {
+            if (!checkForReplacementValue(valueNode, document, diagnostics)
+                && !matchesType(valueNode, propertyDefinition.type)) {
 
                 addDiagnostic(
                     document,
@@ -593,6 +595,13 @@ function validateParameterValue(
     diagnostics: vscode.Diagnostic[],
 ): void {
 
+    //
+    // Replacement value ("$$identifier$name") — exempt from type/enum
+    // checks below. Identifier validity is already diagnosed inside.
+    //
+    if (!definition.isArray && checkForReplacementValue(node, document, diagnostics)) {
+        return;
+    }
 
     //
     // Array validation
@@ -669,4 +678,43 @@ function matchesType(
         default:
             return false;
     }
+}
+
+/**
+ * Checks whether a string node is a "$$identifier$name" replacement value.
+ * If it is, it's exempt from normal type/enum checks (its real value is
+ * resolved elsewhere) — but the identifier keyword itself still gets
+ * validated here.
+ *
+ * Returns true if the node IS a replacement value (valid or not),
+ * so callers know to skip their own type/enum diagnostics.
+ * Returns false if the node is not a replacement value at all.
+ */
+function checkForReplacementValue(
+    node: json.Node,
+    document: vscode.TextDocument,
+    diagnostics: vscode.Diagnostic[],
+): boolean {
+
+    if (node.type !== "string") {
+        return false;
+    }
+
+    const replacement = parseReplacementValue(node.value as string);
+
+    if (!replacement) {
+        return false;
+    }
+
+    if (!replacement.isValidIdentifier) {
+
+        addDiagnostic(
+            document,
+            diagnostics,
+            node,
+            `Unknown replacement identifier "${replacement.identifier}". Expected one of: value, text, function.`,
+        );
+    }
+
+    return true;
 }
