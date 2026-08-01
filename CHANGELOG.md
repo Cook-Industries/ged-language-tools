@@ -10,6 +10,5 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Added
 
-- General functionality
-- Context aware autocomplete
+- General check functionality
 - Changelog

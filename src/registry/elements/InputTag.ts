@@ -1,6 +1,6 @@
-import { ELEMENT_SOURCE, REPETITION_SOURCE, TOOLTIP } from "../CommonParameters";
+import { ELEMENT_SOURCE, INPUT_DISABLED, INPUT_INFO_TEXT, INPUT_INFO_URL, INPUT_NAME, INPUT_SUBMIT_AS, REPETITION_SOURCE, TOOLTIP } from "../CommonParameters";
 import { ATTRIBUTES_PROPERTY, CLASSES_PROPERTY, UID_PROPERTY } from "../CommonProperties";
-import { ElementDefinition, ValueType } from "../ElementDefinitions";
+import { ElementDefinition, PropertyKind, ValueType } from "../ElementDefinitions";
 import { ElementTypes } from "../ElementTypes";
 
 export const INPUT_TAG: ElementDefinition = {
@@ -15,66 +15,57 @@ export const INPUT_TAG: ElementDefinition = {
     },
 
     parameters: {
-        name: {
-            type: ValueType.STRING,
-            description: "display name of this field",
-            required: true
-        },
+        name: INPUT_NAME,
 
-        submitAs: {
-            type: ValueType.STRING,
-            description: "submit name of this value on transfer"
-        },
+        submitAs: INPUT_SUBMIT_AS,
 
-        disabled: {
-            type: ValueType.BOOLEAN,
-            description: "whether this input is active"
-        },
+        disabled: INPUT_DISABLED,
+
+        tooltip: TOOLTIP,
+
+        infoText: INPUT_INFO_TEXT,
+
+        infoUrl: INPUT_INFO_URL,
+
+        repetitionSource: REPETITION_SOURCE,
+
+        elementSource: ELEMENT_SOURCE,
 
         value: {
+            kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
             description: "comma seperated list of tags"
         },
 
         pattern: {
+            kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
             description: "regex to which tags must adhere"
         },
 
         fetchUrl: {
+            kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
             description: "url from which the tags should be fetched"
         },
 
         searchUrl: {
+            kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
             description: "url from against which searches for autocomplete shoudld happen"
         },
 
         enforceWhitelist: {
+            kind: PropertyKind.SCALAR,
             type: ValueType.BOOLEAN,
             description: "whether or not not white-listed tags are allowed"
         },
 
         maxTags: {
+            kind: PropertyKind.SCALAR,
             type: ValueType.NUMBER,
             description: "how many tags are allowed"
-        },
-
-        tooltip: TOOLTIP,
-
-        infoText: {
-            type: ValueType.STRING,
-            description: "text shown in info icon hover"
-        },
-
-        infoUrl: {
-            type: ValueType.STRING,
-            description: "url to call to if info icon is clicked"
-        },
-
-        repetitionSource: REPETITION_SOURCE,
-        elementSource: ELEMENT_SOURCE
+        }
     },
 
     allowedChildren: [

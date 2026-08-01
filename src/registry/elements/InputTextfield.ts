@@ -1,6 +1,6 @@
-import { ELEMENT_SOURCE, REPETITION_SOURCE, TOOLTIP } from "../CommonParameters";
+import { ELEMENT_SOURCE, INPUT_DISABLED, INPUT_INFO_TEXT, INPUT_INFO_URL, INPUT_NAME, INPUT_ON_ENTER_PRESS, INPUT_ONINPUT, INPUT_PLACEHOLDER, INPUT_SUBMIT_AS, REPETITION_SOURCE, TOOLTIP } from "../CommonParameters";
 import { ATTRIBUTES_PROPERTY, CLASSES_PROPERTY, UID_PROPERTY } from "../CommonProperties";
-import { ElementDefinition, ValueType } from "../ElementDefinitions";
+import { ElementDefinition, PropertyKind, ValueType } from "../ElementDefinitions";
 import { ElementTypes } from "../ElementTypes";
 
 export const INPUT_TEXTFIELD: ElementDefinition = {
@@ -15,71 +15,51 @@ export const INPUT_TEXTFIELD: ElementDefinition = {
     },
 
     parameters: {
-        name: {
-            type: ValueType.STRING,
-            description: "display name of this field",
-            required: true
-        },
+        name: INPUT_NAME,
 
-        submitAs: {
-            type: ValueType.STRING,
-            description: "submit name of this value on transfer"
-        },
+        submitAs: INPUT_SUBMIT_AS,
 
-        disabled: {
-            type: ValueType.BOOLEAN,
-            description: "whether this input is active"
-        },
+        disabled: INPUT_DISABLED,
+
+        onInput: INPUT_ONINPUT,
+
+        placeholder: INPUT_PLACEHOLDER,
+
+        onEnterPress: INPUT_ON_ENTER_PRESS,
+
+        tooltip: TOOLTIP,
+
+        infoText: INPUT_INFO_TEXT,
+
+        infoUrl: INPUT_INFO_URL,
+
+        repetitionSource: REPETITION_SOURCE,
+
+        elementSource: ELEMENT_SOURCE,
 
         value: {
+            kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
             description: "text"
         },
 
-        placeholder: {
-            type: ValueType.STRING,
-            description: "placeholder text"
-        },
-
         prefix: {
+            kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
             description: "prefix text to show"
         },
 
         suffix: {
+            kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
             description: "suffix text to show"
         },
 
         maxChars: {
+            kind: PropertyKind.SCALAR,
             type: ValueType.NUMBER,
             description: "suffix text to show"
-        },
-
-        onEnterPress: {
-            type: ValueType.STRING,
-            description: "function call to trigger on enter press"
-        },
-
-        onInput: {
-            type: ValueType.STRING,
-            description: "function call to trigger on any input (except enter) press"
-        },
-
-        tooltip: TOOLTIP,
-
-        infoText: {
-            type: ValueType.STRING,
-            description: "text shown in info icon hover"
-        },
-
-        infoUrl: {
-            type: ValueType.STRING,
-            description: "url to call to if info icon is clicked"
-        },
-
-        repetitionSource: REPETITION_SOURCE,
-        elementSource: ELEMENT_SOURCE
+        }
     },
 
     allowedChildren: []

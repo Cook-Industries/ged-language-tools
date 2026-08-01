@@ -1,6 +1,6 @@
 import { ELEMENT_SOURCE, REPETITION_SOURCE, TOOLTIP } from "../CommonParameters";
 import { ATTRIBUTES_PROPERTY, CLASSES_PROPERTY, UID_PROPERTY } from "../CommonProperties";
-import { ElementDefinition, ValueType } from "../ElementDefinitions";
+import { ElementDefinition, PropertyKind, ValueType } from "../ElementDefinitions";
 
 export const SVG_TEXT: ElementDefinition = {
     type: "text",
@@ -15,6 +15,7 @@ export const SVG_TEXT: ElementDefinition = {
 
     parameters: {
         text: {
+            kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
             description: "text",
             required: true
@@ -23,6 +24,7 @@ export const SVG_TEXT: ElementDefinition = {
         tooltip: TOOLTIP,
 
         repetitionSource: REPETITION_SOURCE,
+
         elementSource: ELEMENT_SOURCE
     },
 

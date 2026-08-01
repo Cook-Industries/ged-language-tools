@@ -3,7 +3,6 @@
     "type": "MODAL",
     "parameters": {
         "name": "TEST MODAL",
-        "formId": "login-form",
         "requestUrl": "/dummy3",
         "btnNameCenter": "reset",
         "btnFunctionCenter": "$$function$reset"
@@ -13,8 +12,11 @@
             "type": "table",
             "parameters": {
                 "name": "test-table",
-                "numOfColumns": "3",
-                "columnNames": "row 1||row 2||row 3"
+                "columnNames": [
+                    "row1",
+                    "row2",
+                    "row3"
+                ]
             },
             "children": [
                 {
@@ -27,7 +29,7 @@
                             "type": "text",
                             "parameters": {
                                 "text": "$$value$test-int",
-                                "inline": "true",
+                                "inline": true,
                                 "tooltip": "test this shit!"
                             }
                         },
@@ -35,7 +37,7 @@
                             "type": "burger",
                             "children": [
                                 {
-                                    "type": "item",
+                                    "type": "burger_item",
                                     "parameters": {
                                         "icon": "bi-bootstrap-reboot",
                                         "url": "/info/user-name",
@@ -49,7 +51,7 @@
                             "type": "burger",
                             "children": [
                                 {
-                                    "type": "item",
+                                    "type": "burger_item",
                                     "parameters": {
                                         "icon": "bi-bootstrap-reboot",
                                         "url": "/info/user-name",
@@ -72,9 +74,7 @@
         {
             "uid": "login-form",
             "type": "form",
-            "parameters": {
-                "direction": "vertical"
-            },
+            "parameters": {},
             "children": [
                 {
                     "uid": "user-name",
@@ -88,21 +88,14 @@
                         "infoUrl": "/info/user-name",
                         "disabled": true,
                         "value": "$$value$number-field-id"
-                    },
-                    "marker": [
-                        {
-                            "category": "error",
-                            "type": "empty",
-                            "text": "test error"
-                        }
-                    ]
+                    }
                 },
                 {
                     "type": "tag",
                     "parameters": {
                         "name": "tag-input",
                         "submitAs": "tags",
-                        "enforceWhitelist": "true",
+                        "enforceWhitelist": true,
                         "fetchUrl": "/tags/fetch",
                         "searchUrl": "/tags/search"
                     }
@@ -115,14 +108,7 @@
                         "submitAs": "textarea",
                         "placeholder": "user@rittal.de",
                         "tooltip": "test tooltip"
-                    },
-                    "marker": [
-                        {
-                            "category": "error",
-                            "type": "empty",
-                            "text": "test error"
-                        }
-                    ]
+                    }
                 },
                 {
                     "uid": "$$value$number-field-id",
@@ -135,14 +121,7 @@
                         "submitAs": "number",
                         "placeholder": "0",
                         "onEnterPress": "login-modal-right-btn"
-                    },
-                    "marker": [
-                        {
-                            "category": "error",
-                            "type": "OUT_OF_RANGE",
-                            "text": "not in range 1 >= value <= 5"
-                        }
-                    ]
+                    }
                 },
                 {
                     "type": "CHECKBOX",
@@ -174,12 +153,13 @@
                     "uid": "files",
                     "type": "file",
                     "parameters": {
-                        "processElement": "$$value$show-file",
                         "name": "files",
                         "submitAs": "files",
-                        "multiple": "false",
-                        "accept": ".pdf",
-                        "infoText": "$$text$files-motherfucker"
+                        "multiple": false,
+                        "infoText": "$$text$files-motherfucker",
+                        "accept": [
+                            ".pdf"
+                        ]
                     }
                 },
                 {
@@ -196,7 +176,7 @@
                             "parameters": {
                                 "text": "test select 1",
                                 "value": "test value",
-                                "checked": "false"
+                                "checked": false
                             }
                         },
                         {
@@ -205,7 +185,7 @@
                             "parameters": {
                                 "text": "$$text$test_name",
                                 "value": "test value",
-                                "checked": "true"
+                                "checked": true
                             }
                         }
                     ]

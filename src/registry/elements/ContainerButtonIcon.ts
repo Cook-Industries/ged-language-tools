@@ -1,6 +1,6 @@
 import { ELEMENT_SOURCE, REPETITION_SOURCE } from "../CommonParameters";
 import { ATTRIBUTES_PROPERTY, CLASSES_PROPERTY, UID_PROPERTY } from "../CommonProperties";
-import { ElementDefinition, ValueType } from "../ElementDefinitions";
+import { ElementDefinition, PropertyKind, ValueType } from "../ElementDefinitions";
 
 export const BUTTON_ICON: ElementDefinition = {
     type: "button_icon",
@@ -15,18 +15,21 @@ export const BUTTON_ICON: ElementDefinition = {
 
     parameters: {
         image: {
+            kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
             description: "image url",
             required: true
         },
 
         onClick: {
+            kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
             description: "onClick function",
             required: true
         },
 
         btnClass: {
+            kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
             description: "Button text",
             enumValues: [
@@ -46,11 +49,13 @@ export const BUTTON_ICON: ElementDefinition = {
         },
 
         tooltip: {
+            kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
             description: "onhover tooltip"
         },
 
         title: {
+            kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
             description: "image alt text"
         },

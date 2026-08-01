@@ -1,6 +1,6 @@
 import { ELEMENT_SOURCE, REPETITION_SOURCE } from "../CommonParameters";
 import { ATTRIBUTES_PROPERTY, CLASSES_PROPERTY, UID_PROPERTY } from "../CommonProperties";
-import { ElementDefinition, ValueType } from "../ElementDefinitions";
+import { ElementDefinition, PropertyKind, ValueType } from "../ElementDefinitions";
 
 export const AUDIO: ElementDefinition = {
     type: "audio",
@@ -15,18 +15,21 @@ export const AUDIO: ElementDefinition = {
 
     parameters: {
         src: {
+            kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
             description: "source url",
             required: true
         },
 
         controls: {
+            kind: PropertyKind.SCALAR,
             type: ValueType.BOOLEAN,
             description: "if controls are shown",
             required: true
         },
 
         autoplay: {
+            kind: PropertyKind.SCALAR,
             type: ValueType.BOOLEAN,
             description: "autoplay active",
             required: true

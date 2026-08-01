@@ -1,4 +1,5 @@
 import { ElementTypes } from "./ElementTypes";
+import { VersionRange } from "../Version";
 
 export const SYSTEM_FIELDS = new Set([
     "type",
@@ -18,34 +19,120 @@ export enum PropertyState {
     DISABLED = "disabled",
 }
 
-export interface ParameterDefinition {
-    type: ValueType;
+export enum PropertyKind {
+    SCALAR = "scalar",
+    LIST = "list",
+    MAP = "map",
+}
 
+//
+// Enum values (used by ParameterDefinition.enumValues)
+//
+// A plain value is valid in every version. Wrap it in a
+// { value, since, until } object only when that specific value
+// needs its own version constraint.
+//
+
+export type EnumValue = string | number | boolean;
+
+export type VersionedEnumValue = VersionRange & { value: EnumValue };
+
+export function isVersionedEnumValue(
+    entry: EnumValue | VersionedEnumValue,
+): entry is VersionedEnumValue {
+
+    return (
+        typeof entry === "object" &&
+        entry !== null &&
+        "value" in entry
+    );
+}
+
+//
+// ParameterDefinition
+//
+
+interface ParameterDefinitionBase extends VersionRange {
     description: string;
 
     required?: boolean;
 
-    enumValues?: Array<string | number | boolean>;
+    enumValues?: Array<EnumValue | VersionedEnumValue>;
 
-    isArray?: boolean;
-
-    conflictsWith?: ParameterDefinition[]
+    conflictsWith?: ParameterDefinition[];
 }
 
-export interface PropertyDefinition {
+export interface ScalarParameterDefinition extends ParameterDefinitionBase {
+    kind: PropertyKind.SCALAR;
     type: ValueType;
+}
 
+export interface ListParameterDefinition extends ParameterDefinitionBase {
+    kind: PropertyKind.LIST;
+    type: ValueType; // type of each element
+}
+
+export interface MapParameterDefinition extends ParameterDefinitionBase {
+    kind: PropertyKind.MAP;
+    type: ValueType; // type of each value
+}
+
+export type ParameterDefinition =
+    | ScalarParameterDefinition
+    | ListParameterDefinition
+    | MapParameterDefinition;
+
+//
+// PropertyDefinition
+//
+
+interface PropertyDefinitionBase extends VersionRange {
     description: string;
 
     state: PropertyState;
 }
 
-export interface ElementDefinition {
+export interface ScalarPropertyDefinition extends PropertyDefinitionBase {
+    kind: PropertyKind.SCALAR;
+    type: ValueType;
+}
+
+export interface ListPropertyDefinition extends PropertyDefinitionBase {
+    kind: PropertyKind.LIST;
+    type: ValueType; // type of each element
+}
+
+export interface MapPropertyDefinition extends PropertyDefinitionBase {
+    kind: PropertyKind.MAP;
+    type: ValueType; // type of each value
+}
+
+export type PropertyDefinition =
+    | ScalarPropertyDefinition
+    | ListPropertyDefinition
+    | MapPropertyDefinition;
+
+//
+// Allowed children
+//
+// A plain ElementTypes entry is allowed in every version. Wrap it in a
+// { type, since, until } object only when that specific child needs its
+// own version constraint (e.g. it was added or removed at a version
+// boundary independently of the child's own type definition).
+//
+
+export type AllowedChild = ElementTypes | (VersionRange & { type: ElementTypes });
+
+//
+// ElementDefinition
+//
+
+export interface ElementDefinition extends VersionRange {
     type: string;
 
     description: string;
 
-    allowedChildren: ElementTypes[];
+    allowedChildren: AllowedChild[];
 
     parameters: Record<string, ParameterDefinition>;
 

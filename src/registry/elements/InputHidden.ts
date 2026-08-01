@@ -1,6 +1,6 @@
-import { ELEMENT_SOURCE, REPETITION_SOURCE, TOOLTIP } from "../CommonParameters";
+import { ELEMENT_SOURCE, INPUT_SUBMIT_AS, REPETITION_SOURCE, TOOLTIP } from "../CommonParameters";
 import { ATTRIBUTES_PROPERTY, CLASSES_PROPERTY, UID_PROPERTY } from "../CommonProperties";
-import { ElementDefinition, ValueType } from "../ElementDefinitions";
+import { ElementDefinition, PropertyKind, ValueType } from "../ElementDefinitions";
 import { ElementTypes } from "../ElementTypes";
 
 export const INPUT_HIDDEN: ElementDefinition = {
@@ -15,18 +15,13 @@ export const INPUT_HIDDEN: ElementDefinition = {
     },
 
     parameters: {
-        submitAs: {
-            type: ValueType.STRING,
-            description: "submit name of this value on transfer"
-        },
+        submitAs: INPUT_SUBMIT_AS,
 
         value: {
+            kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
             description: "text"
-        },
-
-        repetitionSource: REPETITION_SOURCE,
-        elementSource: ELEMENT_SOURCE
+        }
     },
 
     allowedChildren: []

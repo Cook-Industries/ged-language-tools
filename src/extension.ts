@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { validateDocument } from "./providers/GedValidator";
+import { validateDocument, validateDocumentContentOnly } from "./providers/GedValidator";
 import { GedCompletionProvider } from "./providers/GedCompletionProvider";
 
 export function activate(context: vscode.ExtensionContext) {
@@ -19,25 +19,29 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(completionProvider, diagnostics);
 
     //
-    // Validate opened documents
+    // Validate already-open documents on activation
+    // (full: content + location)
     //
     vscode.workspace.textDocuments
         .filter((document) => document.fileName.endsWith(".ged"))
         .forEach((document) => validateDocument(document, diagnostics));
 
     //
-    // Validate on changes
+    // Validate on every edit
+    // (content only — file path can't change mid-edit, so location
+    // diagnostics are reused from cache instead of recomputed)
     //
     context.subscriptions.push(
         vscode.workspace.onDidChangeTextDocument((event) => {
             if (event.document.fileName.endsWith(".ged")) {
-                validateDocument(event.document, diagnostics);
+                validateDocumentContentOnly(event.document, diagnostics);
             }
         }),
     );
 
     //
     // Validate newly opened files
+    // (full: content + location)
     //
     context.subscriptions.push(
         vscode.workspace.onDidOpenTextDocument((document) => {
@@ -46,6 +50,72 @@ export function activate(context: vscode.ExtensionContext) {
             }
         }),
     );
+
+    //
+    // Re-check content/location live when the user toggles the location
+    // checkbox, edits the ignore list, or changes the configured library
+    // version, without needing to reopen files
+    //
+    context.subscriptions.push(
+        vscode.workspace.onDidChangeConfiguration((event) => {
+            if (
+                event.affectsConfiguration("gedLanguageTools.enableLocationCheck") ||
+                event.affectsConfiguration("gedLanguageTools.ignoredLocationPaths") ||
+                event.affectsConfiguration("gedLanguageTools.libraryVersion")
+            ) {
+                vscode.workspace.textDocuments
+                    .filter((document) => document.fileName.endsWith(".ged"))
+                    .forEach((document) => validateDocument(document, diagnostics));
+            }
+        }),
+    );
+
+    //
+    // Handle renames/moves done through VS Code's own UI
+    // (Explorer sidebar, drag-and-drop, workspace.fs API)
+    //
+    context.subscriptions.push(
+        vscode.workspace.onDidRenameFiles((event) => {
+            for (const { oldUri, newUri } of event.files) {
+
+                // Clear diagnostics tied to the old path
+                diagnostics.delete(oldUri);
+
+                if (!newUri.fsPath.endsWith(".ged")) {
+                    continue;
+                }
+
+                const document = vscode.workspace.textDocuments.find(
+                    (doc) => doc.uri.toString() === newUri.toString()
+                );
+
+                if (document) {
+                    validateDocument(document, diagnostics);
+                }
+            }
+        }),
+    );
+
+    //
+    // Catch file moves/creates done OUTSIDE VS Code
+    // (terminal, git, external tools) that onDidRenameFiles can't see
+    //
+    const watcher = vscode.workspace.createFileSystemWatcher("**/*.ged");
+
+    watcher.onDidCreate((uri) => {
+        const document = vscode.workspace.textDocuments.find(
+            (doc) => doc.uri.toString() === uri.toString()
+        );
+        if (document) {
+            validateDocument(document, diagnostics);
+        }
+    });
+
+    watcher.onDidDelete((uri) => {
+        diagnostics.delete(uri);
+    });
+
+    context.subscriptions.push(watcher);
 }
 
 export function deactivate() { }

@@ -1,6 +1,6 @@
 import { ELEMENT_SOURCE, REPETITION_SOURCE } from "../CommonParameters";
 import { ATTRIBUTES_PROPERTY, CLASSES_PROPERTY, UID_PROPERTY } from "../CommonProperties";
-import { ElementDefinition, ValueType } from "../ElementDefinitions";
+import { ElementDefinition, PropertyKind, ValueType } from "../ElementDefinitions";
 import { ElementTypes } from "../ElementTypes";
 
 export const TABLE: ElementDefinition = {
@@ -16,18 +16,21 @@ export const TABLE: ElementDefinition = {
 
     parameters: {
         name: {
+            kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
             description: "name",
             required: true
         },
 
         columnNames: {
+            kind: PropertyKind.LIST,
             type: ValueType.STRING,
-            description: "column names splitted by '||'",
+            description: "column names",
             required: true
         },
 
         sortable: {
+            kind: PropertyKind.SCALAR,
             type: ValueType.BOOLEAN,
             description: "sortable"
         },

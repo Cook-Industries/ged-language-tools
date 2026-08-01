@@ -1,6 +1,6 @@
 import { ELEMENT_SOURCE, REPETITION_SOURCE } from "../CommonParameters";
 import { ATTRIBUTES_PROPERTY, CLASSES_PROPERTY, UID_PROPERTY } from "../CommonProperties";
-import { ElementDefinition, ValueType } from "../ElementDefinitions";
+import { ElementDefinition, PropertyKind, ValueType } from "../ElementDefinitions";
 import { ElementTypes } from "../ElementTypes";
 
 export const TABLE_ROW: ElementDefinition = {
@@ -16,12 +16,14 @@ export const TABLE_ROW: ElementDefinition = {
 
     parameters: {
         tableName: {
+            kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
             description: "name of parent table",
             required: true
         },
 
         repetitionSource: REPETITION_SOURCE,
+
         elementSource: ELEMENT_SOURCE
     },
 

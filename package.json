@@ -20,6 +20,35 @@
       "files.associations": {
         "*.ged": "json"
       }
+    },
+    "configuration": {
+      "title": "GED Language Tools",
+      "properties": {
+        "gedLanguageTools.libraryVersion": {
+          "type": "string",
+          "enum": [
+            "4.0"
+          ],
+          "enumDescriptions": [
+            "ci-lib-spring-core 4.0.0"
+          ],
+          "default": "4.0",
+          "description": "The ci-lib-spring-core .ged language version to validate against. Elements, properties, parameters, and values introduced or removed in other versions will be flagged."
+        },
+        "gedLanguageTools.enableLocationCheck": {
+          "type": "boolean",
+          "default": true,
+          "description": "Warn when .ged files are located outside of \"/resources/templates/\"."
+        },
+        "gedLanguageTools.ignoredLocationPaths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Additional folder paths (relative or absolute, forward slashes) where .ged files are allowed without triggering the location warning."
+        }
+      }
     }
   },
   "scripts": {
@@ -39,7 +68,7 @@
   "devDependencies": {
     "@types/mocha": "^10.0.10",
     "@types/node": "24.x",
-    "@types/vscode": "^1.125.0",
+    "@types/vscode": "^1.120.0",
     "@vscode/test-cli": "^0.0.15",
     "@vscode/test-electron": "^3.0.0",
     "esbuild": "^0.28.1",

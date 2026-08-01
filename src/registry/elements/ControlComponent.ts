@@ -1,5 +1,4 @@
-import { DISABLED_CHILDREN_PROPERTY } from "../CommonProperties";
-import { ElementDefinition, ValueType } from "../ElementDefinitions";
+import { ElementDefinition, PropertyKind, ValueType } from "../ElementDefinitions";
 
 export const COMPONENT: ElementDefinition = {
     type: "component",
@@ -7,25 +6,27 @@ export const COMPONENT: ElementDefinition = {
     description: "linkable source component",
 
     properties: {
-        DISABLED_CHILDREN_PROPERTY
     },
 
     parameters: {
         path: {
+            kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
             description: "resource path",
-            required: true
+            required: true,
+            since: "4.1"
         },
 
         src: {
+            kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
-            description: "TokenMap var name for FlatMappable/FlatMappableList",
-            required: true
+            description: "variable name for FlatMappable/FlatMappableList"
         },
 
         isSourceList: {
+            kind: PropertyKind.SCALAR,
             type: ValueType.BOOLEAN,
-            description: "is source a FlatMappableList"
+            description: "is src a FlatMappableList"
         },
     },
 

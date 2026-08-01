@@ -1,25 +1,86 @@
 import * as vscode from "vscode";
 import * as json from "jsonc-parser";
 
-import { ElementDefinition, ParameterDefinition, PropertyState, SYSTEM_FIELDS, ValueType } from "../registry/ElementDefinitions";
+import { AllowedChild, ElementDefinition, EnumValue, isVersionedEnumValue, ParameterDefinition, PropertyDefinition, PropertyKind, PropertyState, SYSTEM_FIELDS, ValueType, VersionedEnumValue } from "../registry/ElementDefinitions";
 import { TypeRegistry } from "../registry/ElementTypes";
 import { parseReplacementValue } from "../registry/ReplacementValue";
+import { describeVersionConstraint, isVersionSupported, VersionString } from "../Version";
 
 
+// Cache of location diagnostics per document, so content-only validation
+// passes (which run on every keystroke) don't need to recompute them but
+// still include them in the merged diagnostics.set() call.
+const locationDiagnosticsCache = new Map<string, vscode.Diagnostic[]>();
+
+/**
+ * The configured .ged language version, e.g. "3.5" or "4.0". Elements,
+ * properties, parameters, allowed-children entries, and enum values that
+ * declare a `since`/`until` outside this version are treated as if they
+ * didn't exist.
+ */
+function getConfiguredVersion(): VersionString {
+
+    const config = vscode.workspace.getConfiguration("gedLanguageTools");
+
+    return config.get<string>("libraryVersion", "4.0");
+}
+
+/**
+ * Full validation: content + location. Used on document open.
+ */
 export function validateDocument(
     document: vscode.TextDocument,
     diagnostics: vscode.DiagnosticCollection,
 ): void {
 
+    const locationErrors = computeFileLocationDiagnostics(document);
+    locationDiagnosticsCache.set(document.uri.toString(), locationErrors);
 
-    const errors: vscode.Diagnostic[] = [];
+    validateDocumentContent(document, diagnostics, locationErrors);
+}
+
+/**
+ * Content-only validation. Used on every text change — reuses the cached
+ * location diagnostic instead of recomputing it on every keystroke.
+ */
+export function validateDocumentContentOnly(
+    document: vscode.TextDocument,
+    diagnostics: vscode.DiagnosticCollection,
+): void {
+
+    const locationErrors =
+        locationDiagnosticsCache.get(document.uri.toString()) ?? [];
+
+    validateDocumentContent(document, diagnostics, locationErrors);
+}
+
+/**
+ * Re-checks only the file location (e.g. call this if you want a manual
+ * refresh, or wire it to onDidChangeConfiguration for live toggling).
+ */
+export function revalidateFileLocation(
+    document: vscode.TextDocument,
+    diagnostics: vscode.DiagnosticCollection,
+): void {
+
+    validateDocument(document, diagnostics);
+}
+
+function validateDocumentContent(
+    document: vscode.TextDocument,
+    diagnostics: vscode.DiagnosticCollection,
+    seedErrors: vscode.Diagnostic[],
+): void {
+
+    const version = getConfiguredVersion();
+
+    const errors: vscode.Diagnostic[] = [...seedErrors];
     const parseErrors: json.ParseError[] = [];
 
     const root = json.parseTree(
         document.getText(),
         parseErrors
     );
-
 
     //
     // JSON parsing errors
@@ -36,21 +97,10 @@ export function validateDocument(
         );
     }
 
-
     if (!root) {
         diagnostics.set(document.uri, errors);
         return;
     }
-
-
-    const filePath = document.uri.fsPath;
-
-    validateFileLocation(
-        document,
-        root,
-        errors
-    );
-
 
     //
     // ROOT RESOLUTION
@@ -58,12 +108,10 @@ export function validateDocument(
     const rootType =
         getProperty(root, "type")?.children?.[1];
 
-
     if (rootType?.type === "string") {
 
         const rootDefinition =
-            findDefinition(rootType.value as string);
-
+            findDefinition(rootType.value as string, version);
 
         if (!rootDefinition) {
 
@@ -77,17 +125,30 @@ export function validateDocument(
         } else {
 
             //
-            // Root itself is resolved.
-            // Now validate its children using ONLY
-            // the root's allowedChildren list.
+            // Validate the root node's own properties/parameters —
+            // previously only children went through this.
             //
-            const rootChildren =
-                resolveAllowedChildren(rootDefinition);
+            validateProperties(
+                root,
+                rootDefinition,
+                document,
+                errors,
+                version,
+            );
 
+            validateParameters(
+                root,
+                rootDefinition,
+                document,
+                errors,
+                version,
+            );
+
+            const rootChildren =
+                resolveAllowedChildren(rootDefinition, version);
 
             const childrenNode =
                 getProperty(root, "children")?.children?.[1];
-
 
             if (childrenNode?.type === "array") {
 
@@ -98,12 +159,12 @@ export function validateDocument(
                         rootChildren,
                         document,
                         errors,
+                        version,
                     );
                 }
             }
         }
     }
-
 
     diagnostics.set(
         document.uri,
@@ -136,24 +197,40 @@ function addDiagnostic(
     );
 }
 
-function validateFileLocation(
+function computeFileLocationDiagnostics(
     document: vscode.TextDocument,
-    root: json.Node,
-    diagnostics: vscode.Diagnostic[],
-): void {
+): vscode.Diagnostic[] {
+
+    const config = vscode.workspace.getConfiguration("gedLanguageTools");
+    const enabled = config.get<boolean>("enableLocationCheck", true);
+
+    if (!enabled) {
+        return [];
+    }
 
     const filePath = document.uri.fsPath.replace(/\\/g, "/");
 
-    if (!filePath.includes("/resources/templates/")) {
+    if (filePath.includes("/resources/templates/")) {
+        return [];
+    }
 
-        addDiagnostic(
-            document,
-            diagnostics,
-            root,
+    const ignoredPaths = config.get<string[]>("ignoredLocationPaths", []);
+
+    const isIgnored = ignoredPaths.some((ignoredPath) =>
+        filePath.includes(ignoredPath.replace(/\\/g, "/"))
+    );
+
+    if (isIgnored) {
+        return [];
+    }
+
+    return [
+        new vscode.Diagnostic(
+            new vscode.Range(0, 0, 0, 0),
             `GED files should be located inside "/resources/templates/".`,
             vscode.DiagnosticSeverity.Warning,
-        );
-    }
+        ),
+    ];
 }
 
 
@@ -162,6 +239,7 @@ function validateTree(
     possibleDefinitions: ElementDefinition[],
     document: vscode.TextDocument,
     diagnostics: vscode.Diagnostic[],
+    version: VersionString,
 ): void {
 
     const typeNode =
@@ -177,6 +255,8 @@ function validateTree(
 
     //
     // Resolve this node ONLY against the list supplied by parent
+    // (that list has already been filtered by version in
+    // resolveAllowedChildren, so no extra check is needed here)
     //
     const definition =
         possibleDefinitions.find(
@@ -207,6 +287,7 @@ function validateTree(
         definition,
         document,
         diagnostics,
+        version,
     );
 
     validateParameters(
@@ -214,6 +295,7 @@ function validateTree(
         definition,
         document,
         diagnostics,
+        version,
     );
 
 
@@ -222,7 +304,7 @@ function validateTree(
     // Generate the list valid ONLY for its direct children.
     //
     const childDefinitions =
-        resolveAllowedChildren(definition);
+        resolveAllowedChildren(definition, version);
 
 
     const childrenNode =
@@ -244,15 +326,18 @@ function validateTree(
             childDefinitions,
             document,
             diagnostics,
+            version,
         );
     }
 }
 
 /**
- * Find a type definition exactly like GedParser did.
+ * Find a type definition exactly like GedParser did — skipping any
+ * definition that isn't valid for the configured version.
  */
 function findDefinition(
     type: string,
+    version: VersionString,
 ): ElementDefinition | undefined {
 
     for (const key in TypeRegistry) {
@@ -260,7 +345,10 @@ function findDefinition(
         const definition =
             TypeRegistry[key];
 
-        if (definition.type.toLowerCase() === type.toLowerCase()) {
+        if (
+            definition.type.toLowerCase() === type.toLowerCase() &&
+            isVersionSupported(version, definition)
+        ) {
             return definition;
         }
     }
@@ -268,22 +356,46 @@ function findDefinition(
     return undefined;
 }
 
+/**
+ * Normalizes an allowedChildren entry, which may be a bare ElementTypes
+ * value (always allowed) or a { type, since, until } object.
+ */
+function normalizeAllowedChild(
+    entry: AllowedChild,
+): { type: string; since?: VersionString; until?: VersionString } {
+
+    if (typeof entry === "string") {
+        return { type: entry };
+    }
+
+    const { type, since, until } = entry;
+    return { type, since, until };
+}
 
 /**
- * Resolve enum IDs from allowedChildren
- * into actual ElementDefinitions.
+ * Resolve enum IDs from allowedChildren into actual ElementDefinitions,
+ * filtering out entries that aren't valid for the configured version —
+ * either because the allowedChildren entry itself is version-gated, or
+ * because the referenced element type is.
  */
 function resolveAllowedChildren(
     definition: ElementDefinition,
+    version: VersionString,
 ): ElementDefinition[] {
 
     const result: ElementDefinition[] = [];
 
-    for (const enumId of definition.allowedChildren) {
+    for (const entry of definition.allowedChildren) {
+
+        const { type: enumId, ...range } = normalizeAllowedChild(entry);
+
+        if (!isVersionSupported(version, range)) {
+            continue;
+        }
 
         const childDefinition = TypeRegistry[enumId];
 
-        if (childDefinition) {
+        if (childDefinition && isVersionSupported(version, childDefinition)) {
             result.push(childDefinition);
         }
     }
@@ -317,6 +429,7 @@ function validateProperties(
     definition: ElementDefinition,
     document: vscode.TextDocument,
     diagnostics: vscode.Diagnostic[],
+    version: VersionString,
 ): void {
 
     if (node.type !== "object") {
@@ -369,6 +482,23 @@ function validateProperties(
 
 
         //
+        // Property not available in the configured version
+        // (treated the same as "unknown" from the document's point of view)
+        //
+        if (!isVersionSupported(version, propertyDefinition)) {
+
+            addDiagnostic(
+                document,
+                diagnostics,
+                nameNode,
+                `Property "${name}" is not available for type "${definition.type}" in version ${version} (${describeVersionConstraint(propertyDefinition)}).`,
+            );
+
+            continue;
+        }
+
+
+        //
         // Disabled property
         //
         if (
@@ -387,22 +517,19 @@ function validateProperties(
 
 
         //
-        // Type validation
+        // Type validation (structural, per-kind)
         //
         const valueNode = property.children?.[1];
 
         if (valueNode) {
 
-            if (!checkForReplacementValue(valueNode, document, diagnostics)
-                && !matchesType(valueNode, propertyDefinition.type)) {
-
-                addDiagnostic(
-                    document,
-                    diagnostics,
-                    valueNode,
-                    `Property "${name}" must be of type "${propertyDefinition.type}".`,
-                );
-            }
+            validatePropertyValue(
+                name,
+                valueNode,
+                propertyDefinition,
+                document,
+                diagnostics,
+            );
         }
     }
 
@@ -411,6 +538,10 @@ function validateProperties(
     // Required property check
     //
     for (const [name, propertyDefinition] of Object.entries(definition.properties)) {
+
+        if (!isVersionSupported(version, propertyDefinition)) {
+            continue;
+        }
 
         if (
             propertyDefinition.state === PropertyState.REQUIRED &&
@@ -427,16 +558,127 @@ function validateProperties(
     }
 }
 
+/**
+ * Validates a property value against its definition, dispatching on
+ * PropertyKind (scalar / list / map). A "$$identifier$name" replacement
+ * value covering the WHOLE property is exempt from all structural checks.
+ */
+function validatePropertyValue(
+    name: string,
+    node: json.Node,
+    definition: PropertyDefinition,
+    document: vscode.TextDocument,
+    diagnostics: vscode.Diagnostic[],
+): void {
+
+    if (checkForReplacementValue(node, document, diagnostics)) {
+        return;
+    }
+
+    switch (definition.kind) {
+
+        case PropertyKind.SCALAR: {
+
+            if (!matchesType(node, definition.type)) {
+
+                addDiagnostic(
+                    document,
+                    diagnostics,
+                    node,
+                    `Property "${name}" must be of type "${definition.type}".`,
+                );
+            }
+
+            return;
+        }
+
+        case PropertyKind.LIST: {
+
+            if (node.type !== "array") {
+
+                addDiagnostic(
+                    document,
+                    diagnostics,
+                    node,
+                    `Property "${name}" must be an array.`,
+                );
+
+                return;
+            }
+
+            for (const element of node.children ?? []) {
+
+                if (checkForReplacementValue(element, document, diagnostics)) {
+                    continue;
+                }
+
+                if (!matchesType(element, definition.type)) {
+
+                    addDiagnostic(
+                        document,
+                        diagnostics,
+                        element,
+                        `Elements of property "${name}" must be of type "${definition.type}".`,
+                    );
+                }
+            }
+
+            return;
+        }
+
+        case PropertyKind.MAP: {
+
+            if (node.type !== "object") {
+
+                addDiagnostic(
+                    document,
+                    diagnostics,
+                    node,
+                    `Property "${name}" must be an object.`,
+                );
+
+                return;
+            }
+
+            for (const entry of node.children ?? []) {
+
+                const entryValue = entry.children?.[1];
+
+                if (!entryValue) {
+                    continue;
+                }
+
+                if (checkForReplacementValue(entryValue, document, diagnostics)) {
+                    continue;
+                }
+
+                if (!matchesType(entryValue, definition.type)) {
+
+                    addDiagnostic(
+                        document,
+                        diagnostics,
+                        entryValue,
+                        `Values of property "${name}" must be of type "${definition.type}".`,
+                    );
+                }
+            }
+
+            return;
+        }
+    }
+}
+
 function validateParameters(
     node: json.Node,
     definition: ElementDefinition,
     document: vscode.TextDocument,
     diagnostics: vscode.Diagnostic[],
+    version: VersionString,
 ): void {
 
-    const parametersNode =
-        getProperty(node, "parameters")?.children?.[1];
-
+    const parametersProperty = getProperty(node, "parameters");
+    const parametersNode = parametersProperty?.children?.[1];
+    const parametersKeyNode = parametersProperty?.children?.[0];
 
     //
     // Missing parameters object
@@ -445,11 +687,15 @@ function validateParameters(
 
         for (const [name, parameter] of Object.entries(definition.parameters)) {
 
+            if (!isVersionSupported(version, parameter)) {
+                continue;
+            }
+
             if (parameter.required) {
                 addDiagnostic(
                     document,
                     diagnostics,
-                    node,
+                    parametersKeyNode ?? node,
                     `Missing required parameter "${name}" for type "${definition.type}".`,
                 );
             }
@@ -490,13 +736,31 @@ function validateParameters(
     //
     for (const [name, nodes] of existingParameters) {
 
-        if (!definition.parameters[name]) {
+        const parameterDefinition = definition.parameters[name];
+
+        if (!parameterDefinition) {
 
             addDiagnostic(
                 document,
                 diagnostics,
                 nodes.nameNode,
                 `Unknown parameter "${name}" for type "${definition.type}".`,
+            );
+
+            continue;
+        }
+
+        //
+        // Parameter not available in the configured version
+        // (treated the same as "unknown" from the document's point of view)
+        //
+        if (!isVersionSupported(version, parameterDefinition)) {
+
+            addDiagnostic(
+                document,
+                diagnostics,
+                nodes.nameNode,
+                `Parameter "${name}" is not available for type "${definition.type}" in version ${version} (${describeVersionConstraint(parameterDefinition)}).`,
             );
         }
     }
@@ -505,6 +769,10 @@ function validateParameters(
     // Conflict validation
     //
     for (const [name, parameterDefinition] of Object.entries(definition.parameters)) {
+
+        if (!isVersionSupported(version, parameterDefinition)) {
+            continue;
+        }
 
         const currentParameter =
             existingParameters.has(name);
@@ -554,6 +822,10 @@ function validateParameters(
     //
     for (const [name, paramDef] of Object.entries(definition.parameters)) {
 
+        if (!isVersionSupported(version, paramDef)) {
+            continue;
+        }
+
         const entry = existingParameters.get(name);
 
         const valueNode = entry?.valueNode;
@@ -568,7 +840,7 @@ function validateParameters(
                 addDiagnostic(
                     document,
                     diagnostics,
-                    parametersNode,
+                    parametersKeyNode ?? parametersNode,
                     `Missing required parameter "${name}".`,
                 );
             }
@@ -583,76 +855,182 @@ function validateParameters(
             paramDef,
             document,
             diagnostics,
+            version,
         );
     }
 }
 
+/**
+ * Validates a parameter value against its definition, dispatching on
+ * PropertyKind (scalar / list / map). A "$$identifier$name" replacement
+ * value covering the WHOLE parameter is exempt from all structural/enum
+ * checks. Individual elements/values inside a list/map can ALSO be
+ * replacement values, independently of the others.
+ *
+ * enumValues, when present, is checked against every resolved scalar:
+ * the single value for SCALAR, or each element/value for LIST/MAP —
+ * filtered down to whichever enum values are valid for the configured
+ * version first.
+ */
 function validateParameterValue(
     name: string,
     node: json.Node,
     definition: ParameterDefinition,
     document: vscode.TextDocument,
     diagnostics: vscode.Diagnostic[],
+    version: VersionString,
 ): void {
 
-    //
-    // Replacement value ("$$identifier$name") — exempt from type/enum
-    // checks below. Identifier validity is already diagnosed inside.
-    //
-    if (!definition.isArray && checkForReplacementValue(node, document, diagnostics)) {
+    if (checkForReplacementValue(node, document, diagnostics)) {
         return;
     }
 
-    //
-    // Array validation
-    //
-    if (definition.isArray) {
+    switch (definition.kind) {
 
-        if (node.type !== "array") {
+        case PropertyKind.SCALAR: {
 
-            addDiagnostic(
-                document,
-                diagnostics,
-                node,
-                `Parameter "${name}" must be an array.`,
-            );
+            if (!matchesType(node, definition.type)) {
+
+                addDiagnostic(
+                    document,
+                    diagnostics,
+                    node,
+                    `Parameter "${name}" must be of type "${definition.type}".`,
+                );
+
+                return;
+            }
+
+            validateEnumValue(name, node, definition, document, diagnostics, version);
 
             return;
         }
 
-    } else {
+        case PropertyKind.LIST: {
 
-        if (!matchesType(node, definition.type)) {
+            if (node.type !== "array") {
 
-            addDiagnostic(
-                document,
-                diagnostics,
-                node,
-                `Parameter "${name}" must be of type "${definition.type}".`,
-            );
+                addDiagnostic(
+                    document,
+                    diagnostics,
+                    node,
+                    `Parameter "${name}" must be an array.`,
+                );
+
+                return;
+            }
+
+            for (const element of node.children ?? []) {
+
+                if (checkForReplacementValue(element, document, diagnostics)) {
+                    continue;
+                }
+
+                if (!matchesType(element, definition.type)) {
+
+                    addDiagnostic(
+                        document,
+                        diagnostics,
+                        element,
+                        `Elements of parameter "${name}" must be of type "${definition.type}".`,
+                    );
+
+                    continue;
+                }
+
+                validateEnumValue(name, element, definition, document, diagnostics, version);
+            }
+
+            return;
+        }
+
+        case PropertyKind.MAP: {
+
+            if (node.type !== "object") {
+
+                addDiagnostic(
+                    document,
+                    diagnostics,
+                    node,
+                    `Parameter "${name}" must be an object.`,
+                );
+
+                return;
+            }
+
+            for (const entry of node.children ?? []) {
+
+                const entryValue = entry.children?.[1];
+
+                if (!entryValue) {
+                    continue;
+                }
+
+                if (checkForReplacementValue(entryValue, document, diagnostics)) {
+                    continue;
+                }
+
+                if (!matchesType(entryValue, definition.type)) {
+
+                    addDiagnostic(
+                        document,
+                        diagnostics,
+                        entryValue,
+                        `Values of parameter "${name}" must be of type "${definition.type}".`,
+                    );
+
+                    continue;
+                }
+
+                validateEnumValue(name, entryValue, definition, document, diagnostics, version);
+            }
 
             return;
         }
     }
+}
 
+/**
+ * Checks a single resolved scalar node against definition.enumValues,
+ * if present. Called once for SCALAR params, or once per element/value
+ * for LIST/MAP params.
+ *
+ * Enum values may be plain values (valid in every version) or
+ * { value, since, until } objects (valid only within that range). The
+ * value is resolved against whichever subset is valid for the
+ * configured version.
+ */
+function validateEnumValue(
+    name: string,
+    node: json.Node,
+    definition: ParameterDefinition,
+    document: vscode.TextDocument,
+    diagnostics: vscode.Diagnostic[],
+    version: VersionString,
+): void {
 
-    //
-    // Enum validation
-    //
-    if (definition.enumValues) {
+    if (!definition.enumValues) {
+        return;
+    }
 
-        const value = node.value;
+    const supportedValues: EnumValue[] = definition.enumValues
+        .filter((entry: EnumValue | VersionedEnumValue) =>
+            isVersionedEnumValue(entry) ? isVersionSupported(version, entry) : true,
+        )
+        .map((entry: EnumValue | VersionedEnumValue) =>
+            isVersionedEnumValue(entry) ? entry.value : entry,
+        );
 
+    const value = node.value;
 
-        if (!definition.enumValues.includes(value)) {
+    if (!supportedValues.includes(value)) {
 
-            addDiagnostic(
-                document,
-                diagnostics,
-                node,
-                `Invalid value "${value}" for "${name}". Allowed values: [${definition.enumValues.join(", ")}]`,
-            );
-        }
+        addDiagnostic(
+            document,
+            diagnostics,
+            node,
+            `Invalid value "${value}" for "${name}". Allowed values: [${supportedValues.join(", ")}]`,
+        );
     }
 }
 
