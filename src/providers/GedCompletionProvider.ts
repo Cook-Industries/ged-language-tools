@@ -10,7 +10,7 @@ import {
     resolveSupportedParameters,
     resolveSupportedProperties,
 } from "./DefinitionResolver";
-import { VersionString } from "../Version";
+import { describeVersionConstraint, VersionString } from "../Version";
 import { getConfiguredVersion } from "../GedConfig";
 
 const RESERVED_KEYS = ["type", "parameters", "children"] as const;
@@ -239,7 +239,7 @@ export class GedCompletionProvider
 
             return resolveSupportedParameters(definition, version)
                 .filter(([name]) => !existingKeys.has(name))
-                .map(([name, parameterDefinition]) => this.makeParameterItem(name, parameterDefinition, keyEdit));
+                .map(([name, parameterDefinition]) => this.makeParameterItem(name, parameterDefinition, keyEdit, version));
         }
 
         const items: vscode.CompletionItem[] = [];
@@ -508,8 +508,17 @@ export class GedCompletionProvider
 
         const item = new vscode.CompletionItem(name, vscode.CompletionItemKind.Property);
 
-        item.detail = `${definition.kind} ${definition.type}${definition.state === PropertyState.REQUIRED ? " (required)" : ""}`;
-        item.documentation = new vscode.MarkdownString(definition.description);
+        const requiredLabel = definition.state === PropertyState.REQUIRED ? " · required" : "";
+        item.detail = `${definition.kind} ${definition.type}${requiredLabel} — ${definition.description}`;
+
+        const doc = new vscode.MarkdownString();
+        doc.appendMarkdown(definition.description);
+
+        if (definition.since || definition.until) {
+            doc.appendMarkdown(`\n\n_${describeVersionConstraint(definition)}_`);
+        }
+
+        item.documentation = doc;
 
         this.applyKeyEdit(item, name, `: ${this.defaultValueScaffold(definition.kind, definition.type)}`, keyEdit);
 
@@ -520,12 +529,29 @@ export class GedCompletionProvider
         name: string,
         definition: ParameterDefinition,
         keyEdit: KeyEdit | undefined,
+        version: VersionString,
     ): vscode.CompletionItem {
 
         const item = new vscode.CompletionItem(name, vscode.CompletionItemKind.Field);
 
-        item.detail = `${definition.kind} ${definition.type}${definition.required ? " (required)" : ""}`;
-        item.documentation = new vscode.MarkdownString(definition.description);
+        const requiredLabel = definition.required ? " · required" : "";
+        const enumValues = resolveSupportedEnumValues(definition, version);
+        const enumLabel = enumValues.length > 0 ? ` · one of: ${enumValues.join(", ")}` : "";
+
+        item.detail = `${definition.kind} ${definition.type}${requiredLabel}${enumLabel} — ${definition.description}`;
+
+        const doc = new vscode.MarkdownString();
+        doc.appendMarkdown(definition.description);
+
+        if (enumValues.length > 0) {
+            doc.appendMarkdown(`\n\n**Allowed values:** ${enumValues.map((value) => `\`${value}\``).join(", ")}`);
+        }
+
+        if (definition.since || definition.until) {
+            doc.appendMarkdown(`\n\n_${describeVersionConstraint(definition)}_`);
+        }
+
+        item.documentation = doc;
 
         this.applyKeyEdit(item, name, `: ${this.defaultValueScaffold(definition.kind, definition.type)}`, keyEdit);
 
