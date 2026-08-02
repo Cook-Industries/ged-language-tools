@@ -1,0 +1,6 @@
+{
+    "scopeName": "source.ged",
+    "patterns": [
+        { "include": "source.json" }
+    ]
+}

@@ -1,29 +1,23 @@
 import * as vscode from "vscode";
 import * as json from "jsonc-parser";
 
-import { AllowedChild, ElementDefinition, EnumValue, isVersionedEnumValue, ParameterDefinition, PropertyDefinition, PropertyKind, PropertyState, SYSTEM_FIELDS, ValueType, VersionedEnumValue } from "../registry/ElementDefinitions";
-import { TypeRegistry } from "../registry/ElementTypes";
+import { ElementDefinition, ParameterDefinition, PropertyDefinition, PropertyKind, PropertyState, SYSTEM_FIELDS, ValueType } from "../registry/ElementDefinitions";
+import {
+    findDefinition,
+    resolveAllowedChildren,
+    resolveSupportedEnumValues,
+    resolveSupportedParameters,
+    resolveSupportedProperties,
+} from "./DefinitionResolver";
 import { parseReplacementValue } from "../registry/ReplacementValue";
 import { describeVersionConstraint, isVersionSupported, VersionString } from "../Version";
+import { getConfiguredVersion } from "../GedConfig";
 
 
 // Cache of location diagnostics per document, so content-only validation
 // passes (which run on every keystroke) don't need to recompute them but
 // still include them in the merged diagnostics.set() call.
 const locationDiagnosticsCache = new Map<string, vscode.Diagnostic[]>();
-
-/**
- * The configured .ged language version, e.g. "3.5" or "4.0". Elements,
- * properties, parameters, allowed-children entries, and enum values that
- * declare a `since`/`until` outside this version are treated as if they
- * didn't exist.
- */
-function getConfiguredVersion(): VersionString {
-
-    const config = vscode.workspace.getConfiguration("gedLanguageTools");
-
-    return config.get<string>("libraryVersion", "4.0");
-}
 
 /**
  * Full validation: content + location. Used on document open.
@@ -332,79 +326,6 @@ function validateTree(
 }
 
 /**
- * Find a type definition exactly like GedParser did — skipping any
- * definition that isn't valid for the configured version.
- */
-function findDefinition(
-    type: string,
-    version: VersionString,
-): ElementDefinition | undefined {
-
-    for (const key in TypeRegistry) {
-
-        const definition =
-            TypeRegistry[key];
-
-        if (
-            definition.type.toLowerCase() === type.toLowerCase() &&
-            isVersionSupported(version, definition)
-        ) {
-            return definition;
-        }
-    }
-
-    return undefined;
-}
-
-/**
- * Normalizes an allowedChildren entry, which may be a bare ElementTypes
- * value (always allowed) or a { type, since, until } object.
- */
-function normalizeAllowedChild(
-    entry: AllowedChild,
-): { type: string; since?: VersionString; until?: VersionString } {
-
-    if (typeof entry === "string") {
-        return { type: entry };
-    }
-
-    const { type, since, until } = entry;
-    return { type, since, until };
-}
-
-/**
- * Resolve enum IDs from allowedChildren into actual ElementDefinitions,
- * filtering out entries that aren't valid for the configured version —
- * either because the allowedChildren entry itself is version-gated, or
- * because the referenced element type is.
- */
-function resolveAllowedChildren(
-    definition: ElementDefinition,
-    version: VersionString,
-): ElementDefinition[] {
-
-    const result: ElementDefinition[] = [];
-
-    for (const entry of definition.allowedChildren) {
-
-        const { type: enumId, ...range } = normalizeAllowedChild(entry);
-
-        if (!isVersionSupported(version, range)) {
-            continue;
-        }
-
-        const childDefinition = TypeRegistry[enumId];
-
-        if (childDefinition && isVersionSupported(version, childDefinition)) {
-            result.push(childDefinition);
-        }
-    }
-
-    return result;
-}
-
-
-/**
  * Find an object property node.
  */
 function getProperty(
@@ -537,11 +458,7 @@ function validateProperties(
     //
     // Required property check
     //
-    for (const [name, propertyDefinition] of Object.entries(definition.properties)) {
-
-        if (!isVersionSupported(version, propertyDefinition)) {
-            continue;
-        }
+    for (const [name, propertyDefinition] of resolveSupportedProperties(definition, version)) {
 
         if (
             propertyDefinition.state === PropertyState.REQUIRED &&
@@ -685,11 +602,7 @@ function validateParameters(
     //
     if (!parametersNode || parametersNode.type !== "object") {
 
-        for (const [name, parameter] of Object.entries(definition.parameters)) {
-
-            if (!isVersionSupported(version, parameter)) {
-                continue;
-            }
+        for (const [name, parameter] of resolveSupportedParameters(definition, version)) {
 
             if (parameter.required) {
                 addDiagnostic(
@@ -768,11 +681,7 @@ function validateParameters(
     //
     // Conflict validation
     //
-    for (const [name, parameterDefinition] of Object.entries(definition.parameters)) {
-
-        if (!isVersionSupported(version, parameterDefinition)) {
-            continue;
-        }
+    for (const [name, parameterDefinition] of resolveSupportedParameters(definition, version)) {
 
         const currentParameter =
             existingParameters.has(name);
@@ -820,11 +729,7 @@ function validateParameters(
     //
     // Validate declared parameters
     //
-    for (const [name, paramDef] of Object.entries(definition.parameters)) {
-
-        if (!isVersionSupported(version, paramDef)) {
-            continue;
-        }
+    for (const [name, paramDef] of resolveSupportedParameters(definition, version)) {
 
         const entry = existingParameters.get(name);
 
@@ -994,11 +899,6 @@ function validateParameterValue(
  * Checks a single resolved scalar node against definition.enumValues,
  * if present. Called once for SCALAR params, or once per element/value
  * for LIST/MAP params.
- *
- * Enum values may be plain values (valid in every version) or
- * { value, since, until } objects (valid only within that range). The
- * value is resolved against whichever subset is valid for the
- * configured version.
  */
 function validateEnumValue(
     name: string,
@@ -1013,13 +913,7 @@ function validateEnumValue(
         return;
     }
 
-    const supportedValues: EnumValue[] = definition.enumValues
-        .filter((entry: EnumValue | VersionedEnumValue) =>
-            isVersionedEnumValue(entry) ? isVersionSupported(version, entry) : true,
-        )
-        .map((entry: EnumValue | VersionedEnumValue) =>
-            isVersionedEnumValue(entry) ? entry.value : entry,
-        );
+    const supportedValues = resolveSupportedEnumValues(definition, version);
 
     const value = node.value;
 

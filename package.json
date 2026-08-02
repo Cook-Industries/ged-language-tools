@@ -15,12 +15,28 @@
   ],
   "main": "./dist/extension.js",
   "contributes": {
-    "commands": [],
-    "configurationDefaults": {
-      "files.associations": {
-        "*.ged": "json"
+    "languages": [
+      {
+        "id": "ged",
+        "aliases": [
+          "GED",
+          "ged"
+        ],
+        "extensions": [
+          ".ged"
+        ],
+        "configuration": "./language-configuration.json"
       }
-    },
+    ],
+    "grammars": [
+      {
+        "language": "ged",
+        "scopeName": "source.ged",
+        "path": "./syntaxes/ged.tmLanguage.json"
+      }
+    ],
+    "commands": [],
+    "configurationDefaults": {},
     "configuration": {
       "title": "GED Language Tools",
       "properties": {

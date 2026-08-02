@@ -1,22 +1,25 @@
 import * as vscode from "vscode";
 import { validateDocument, validateDocumentContentOnly } from "./providers/GedValidator";
 import { GedCompletionProvider } from "./providers/GedCompletionProvider";
+import { GedDocumentFormattingEditProvider } from "./providers/GedFormatter";
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('"ged-language-tools" loaded.');
 
     const completionProvider = vscode.languages.registerCompletionItemProvider(
-        {
-            language: "json",
-            pattern: "**/*.ged",
-        },
+        { language: "ged" },
         new GedCompletionProvider(),
         '"',
     );
 
+    const formattingProvider = vscode.languages.registerDocumentFormattingEditProvider(
+        { language: "ged" },
+        new GedDocumentFormattingEditProvider(),
+    );
+
     const diagnostics = vscode.languages.createDiagnosticCollection("ged");
 
-    context.subscriptions.push(completionProvider, diagnostics);
+    context.subscriptions.push(completionProvider, formattingProvider, diagnostics);
 
     //
     // Validate already-open documents on activation
