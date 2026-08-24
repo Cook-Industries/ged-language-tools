@@ -14,10 +14,10 @@ export const BUTTON_ICON: ElementDefinition = {
     },
 
     parameters: {
-        image: {
+        icon: {
             kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
-            description: "image url",
+            description: "icon name",
             required: true
         },
 
@@ -52,12 +52,6 @@ export const BUTTON_ICON: ElementDefinition = {
             kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
             description: "onhover tooltip"
-        },
-
-        title: {
-            kind: PropertyKind.SCALAR,
-            type: ValueType.STRING,
-            description: "image alt text"
         },
 
         repetitionSource: REPETITION_SOURCE,

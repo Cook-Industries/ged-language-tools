@@ -25,7 +25,7 @@ export const HEADING: ElementDefinition = {
 
         size: {
             kind: PropertyKind.SCALAR,
-            type: ValueType.BOOLEAN,
+            type: ValueType.NUMBER,
             description: "inline",
             enumValues: [
                 1,

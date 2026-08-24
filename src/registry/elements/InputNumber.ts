@@ -53,18 +53,6 @@ export const INPUT_NUMBER: ElementDefinition = {
             kind: PropertyKind.SCALAR,
             type: ValueType.NUMBER,
             description: "maximal valueF"
-        },
-
-        prefix: {
-            kind: PropertyKind.SCALAR,
-            type: ValueType.STRING,
-            description: "prefix text to show"
-        },
-
-        suffix: {
-            kind: PropertyKind.SCALAR,
-            type: ValueType.STRING,
-            description: "suffix text to show"
         }
     },
 

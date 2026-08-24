@@ -4,8 +4,8 @@
     "parameters": {
         "name": "TEST MODAL",
         "requestUrl": "/dummy3",
-        "btnNameCenter": "reset",
-        "btnFunctionCenter": "$$function$reset"
+        "btnCenterName": "reset",
+        "btnCenterFunction": "$$function$reset"
     },
     "children": [
         {
