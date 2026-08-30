@@ -13,8 +13,7 @@ export const COMPONENT: ElementDefinition = {
             kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
             description: "resource path",
-            required: true,
-            since: "4.1"
+            required: true
         },
 
         src: {

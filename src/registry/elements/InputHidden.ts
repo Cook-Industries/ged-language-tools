@@ -10,7 +10,9 @@ export const INPUT_HIDDEN: ElementDefinition = {
 
     properties: {
         uid: UID_PROPERTY,
+
         classes: CLASSES_PROPERTY,
+
         attributes: ATTRIBUTES_PROPERTY
     },
 

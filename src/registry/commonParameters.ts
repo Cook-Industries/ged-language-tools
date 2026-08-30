@@ -74,6 +74,12 @@ export const INPUT_ON_ENTER_PRESS: ParameterDefinition = {
     description: "function call to trigger on enter press"
 };
 
+export const INPUT_MANDATORY: ParameterDefinition = {
+    kind: PropertyKind.SCALAR,
+    type: ValueType.BOOLEAN,
+    description: "whether this input is mandatory"
+};
+
 // Conflicts
 REPETITION_SOURCE.conflictsWith = [ELEMENT_SOURCE];
 ELEMENT_SOURCE.conflictsWith = [REPETITION_SOURCE];

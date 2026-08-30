@@ -28,10 +28,6 @@ export enum PropertyKind {
 //
 // Enum values (used by ParameterDefinition.enumValues)
 //
-// A plain value is valid in every version. Wrap it in a
-// { value, since, until } object only when that specific value
-// needs its own version constraint.
-//
 
 export type EnumValue = string | number | boolean;
 
@@ -99,12 +95,12 @@ export interface ScalarPropertyDefinition extends PropertyDefinitionBase {
 
 export interface ListPropertyDefinition extends PropertyDefinitionBase {
     kind: PropertyKind.LIST;
-    type: ValueType; // type of each element
+    type: ValueType;
 }
 
 export interface MapPropertyDefinition extends PropertyDefinitionBase {
     kind: PropertyKind.MAP;
-    type: ValueType; // type of each value
+    type: ValueType;
 }
 
 export type PropertyDefinition =
@@ -114,11 +110,6 @@ export type PropertyDefinition =
 
 //
 // Allowed children
-//
-// A plain ElementTypes entry is allowed in every version. Wrap it in a
-// { type, since, until } object only when that specific child needs its
-// own version constraint (e.g. it was added or removed at a version
-// boundary independently of the child's own type definition).
 //
 
 export type AllowedChild = ElementTypes | (VersionRange & { type: ElementTypes });

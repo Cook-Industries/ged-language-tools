@@ -36,7 +36,7 @@ export const BUTTON: ElementDefinition = {
                 "default",
                 "primary",
                 "secondary",
-                "sucess",
+                "success",
                 "warning",
                 "error",
                 "danger",
