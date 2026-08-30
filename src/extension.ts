@@ -23,7 +23,6 @@ export function activate(context: vscode.ExtensionContext) {
 
     //
     // Validate already-open documents on activation
-    // (full: content + location)
     //
     vscode.workspace.textDocuments
         .filter((document) => document.fileName.endsWith(".ged"))
@@ -31,8 +30,6 @@ export function activate(context: vscode.ExtensionContext) {
 
     //
     // Validate on every edit
-    // (content only — file path can't change mid-edit, so location
-    // diagnostics are reused from cache instead of recomputed)
     //
     context.subscriptions.push(
         vscode.workspace.onDidChangeTextDocument((event) => {
@@ -44,7 +41,6 @@ export function activate(context: vscode.ExtensionContext) {
 
     //
     // Validate newly opened files
-    // (full: content + location)
     //
     context.subscriptions.push(
         vscode.workspace.onDidOpenTextDocument((document) => {
@@ -81,7 +77,6 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.workspace.onDidRenameFiles((event) => {
             for (const { oldUri, newUri } of event.files) {
 
-                // Clear diagnostics tied to the old path
                 diagnostics.delete(oldUri);
 
                 if (!newUri.fsPath.endsWith(".ged")) {
