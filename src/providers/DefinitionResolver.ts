@@ -15,7 +15,7 @@ import { isVersionSupported, VersionString } from "../Version";
  */
 export function findDefinition(
     type: string,
-    version: VersionString,
+    version: VersionString
 ): ElementDefinition | undefined {
 
     for (const key in TypeRegistry) {
@@ -39,9 +39,12 @@ export function findDefinition(
  * There's no "allowedChildren" restriction at the document root, so this
  * is just every registered definition, version-filtered.
  */
-export function allRootDefinitions(version: VersionString): ElementDefinition[] {
+export function allRootDefinitions(
+    version: VersionString
+): ElementDefinition[] {
 
-    return Object.values(TypeRegistry)
+    return Object
+        .values(TypeRegistry)
         .filter((definition) => isVersionSupported(version, definition));
 }
 
@@ -50,7 +53,7 @@ export function allRootDefinitions(version: VersionString): ElementDefinition[] 
  * value (always allowed) or a { type, since, until } object.
  */
 function normalizeAllowedChild(
-    entry: AllowedChild,
+    entry: AllowedChild
 ): { type: string; since?: VersionString; until?: VersionString } {
 
     if (typeof entry === "string") {
@@ -58,6 +61,7 @@ function normalizeAllowedChild(
     }
 
     const { type, since, until } = entry;
+
     return { type, since, until };
 }
 
@@ -69,7 +73,7 @@ function normalizeAllowedChild(
  */
 export function resolveAllowedChildren(
     definition: ElementDefinition,
-    version: VersionString,
+    version: VersionString
 ): ElementDefinition[] {
 
     const result: ElementDefinition[] = [];
@@ -97,10 +101,11 @@ export function resolveAllowedChildren(
  */
 export function resolveSupportedProperties(
     definition: ElementDefinition,
-    version: VersionString,
+    version: VersionString
 ): Array<[string, PropertyDefinition]> {
 
-    return Object.entries(definition.properties)
+    return Object
+        .entries(definition.properties)
         .filter(([, propertyDefinition]) => isVersionSupported(version, propertyDefinition));
 }
 
@@ -109,10 +114,11 @@ export function resolveSupportedProperties(
  */
 export function resolveSupportedParameters(
     definition: ElementDefinition,
-    version: VersionString,
+    version: VersionString
 ): Array<[string, ParameterDefinition]> {
 
-    return Object.entries(definition.parameters)
+    return Object
+        .entries(definition.parameters)
         .filter(([, parameterDefinition]) => isVersionSupported(version, parameterDefinition));
 }
 
@@ -123,14 +129,15 @@ export function resolveSupportedParameters(
  */
 export function resolveSupportedEnumValues(
     definition: ParameterDefinition,
-    version: VersionString,
+    version: VersionString
 ): EnumValue[] {
 
     if (!definition.enumValues) {
         return [];
     }
 
-    return definition.enumValues
+    return definition
+        .enumValues
         .filter((entry) => (isVersionedEnumValue(entry) ? isVersionSupported(version, entry) : true))
         .map((entry) => (isVersionedEnumValue(entry) ? entry.value : entry));
 }

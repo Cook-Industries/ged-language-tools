@@ -346,7 +346,9 @@ export class GedCompletionProvider
      * Otherwise returns undefined (containerObject is an element object
      * itself, or something else entirely).
      */
-    private parametersOwnerOf(containerObject: json.Node): json.Node | undefined {
+    private parametersOwnerOf(
+        containerObject: json.Node
+    ): json.Node | undefined {
 
         const owningProperty = containerObject.parent;
 
@@ -366,7 +368,9 @@ export class GedCompletionProvider
      * array, returns that parent element object. Otherwise undefined
      * (elementObject is the document root).
      */
-    private parentElementOf(elementObject: json.Node): json.Node | undefined {
+    private parentElementOf(
+        elementObject: json.Node
+    ): json.Node | undefined {
 
         const arrayNode = elementObject.parent;
 
@@ -401,7 +405,9 @@ export class GedCompletionProvider
         return type ? findDefinition(type, version) : undefined;
     }
 
-    private typeValueOf(elementObject: json.Node): string | undefined {
+    private typeValueOf(
+        elementObject: json.Node
+    ): string | undefined {
 
         const typeProperty = elementObject.children?.find(
             (property) => property.type === "property" && property.children?.[0]?.value === "type",
@@ -412,7 +418,9 @@ export class GedCompletionProvider
         return valueNode?.type === "string" ? (valueNode.value as string) : undefined;
     }
 
-    private existingObjectKeys(node: json.Node): Set<string> {
+    private existingObjectKeys(
+        node: json.Node
+    ): Set<string> {
 
         const keys = new Set<string>();
 
@@ -434,7 +442,10 @@ export class GedCompletionProvider
      * exactly one pair of quotes survives, regardless of whether the
      * editor auto-closed the opening quote or not.
      */
-    private stringInterior(node: json.Node, document: vscode.TextDocument): vscode.Range {
+    private stringInterior(
+        node: json.Node,
+        document: vscode.TextDocument
+    ): vscode.Range {
 
         return new vscode.Range(
             document.positionAt(node.offset + 1),
@@ -447,7 +458,10 @@ export class GedCompletionProvider
      * closing quote, so the ": <value>" scaffold can be appended there as
      * a SEPARATE edit instead of being baked into the same replacement.
      */
-    private keyEditFor(node: json.Node, document: vscode.TextDocument): KeyEdit {
+    private keyEditFor(
+        node: json.Node,
+        document: vscode.TextDocument
+    ): KeyEdit {
 
         return {
             range: this.stringInterior(node, document),
@@ -625,6 +639,7 @@ export class GedCompletionProvider
                 return "false";
 
             case ValueType.NUMBER:
+
             default:
                 return "0";
         }
