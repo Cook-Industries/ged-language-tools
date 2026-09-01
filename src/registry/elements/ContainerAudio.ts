@@ -21,18 +21,23 @@ export const AUDIO: ElementDefinition = {
             required: true
         },
 
+        newFeature: {
+            kind: PropertyKind.SCALAR,
+            type: ValueType.STRING,
+            description: "Button text",
+            since: "5.0.0"
+        },
+
         controls: {
             kind: PropertyKind.SCALAR,
             type: ValueType.BOOLEAN,
-            description: "if controls are shown",
-            required: true
+            description: "if controls are shown"
         },
 
         autoplay: {
             kind: PropertyKind.SCALAR,
             type: ValueType.BOOLEAN,
-            description: "autoplay active",
-            required: true
+            description: "autoplay active"
         },
 
         repetitionSource: REPETITION_SOURCE,

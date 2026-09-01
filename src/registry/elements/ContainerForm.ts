@@ -38,11 +38,9 @@ export const FORM: ElementDefinition = {
 
     allowedChildren: [
         ElementTypes.INPUT_CHECKBOX,
-        ElementTypes.INPUT_CURRENCY,
         ElementTypes.INPUT_DATE,
         ElementTypes.INPUT_FILE,
         ElementTypes.INPUT_HIDDEN,
-        ElementTypes.INPUT_LINK,
         ElementTypes.INPUT_NUMBER,
         ElementTypes.INPUT_PASSWORD,
         ElementTypes.INPUT_RADIO,

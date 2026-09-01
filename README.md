@@ -1,71 +1,77 @@
-# ged-language-tools README
+# GED Language Tools
 
-This is the README for your extension "ged-language-tools". After writing up a brief description, we recommend including the following sections.
+A VS Code extension that adds rich editing for `.ged` files — the JSON-based DSL used by `ci-lib-spring-gui` to define UI templates.
+
+Out of the box, `.ged` files get version-aware validation, context-aware autocomplete, and cross-referencing of `$$value$` / `$$text$` / `$$function$` / `$$class$` replacement tokens against your project's actual Java code and the corresponding `ci-lib-spring-gui` functionalities.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+### Context-aware autocomplete
 
-For example if there is an image subfolder under your extension project workspace:
+Completions are driven by a element registry:
 
-\!\[feature X\]\(images/feature-x.png\)
+- **Type values** > only the types actually allowed as a child at that position (or as a root type)
+- **Property keys** > only the properties valid for that specific element
+- **Parameter keys** > only the parameters valid for that specific element, inside `"parameters": { ... }`
+- **Parameter values** > the declared `enumValues` for that parameter, if applicable
+- **New child elements** > a ready-to-use `{ "type": "..." }` snippet for every element allowed at that position
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+All of the above automatically respect the configured library version.
+
+![Basic auto-complete and required arguments check](images/basic-auto-complete.gif)
+
+![Context aware children auto-complete](images/context-aware-children.gif)
+
+It also is type aware and flags wrong parameter types.
+
+> Note: this only works for hardcoded parameter inside the JSON struct. Parameters that get replaced via dynamic `$$value$` placeholders cannot be checked this way.
+
+![Type check for paramters](images/type-check.gif)
+
+![Type check disabled for replacment variables](images/replacement-value.gif)
+
+### Version-aware validation
+
+Every `.ged` file is validated against the element/property/parameter definitions for the `ci-lib-spring-gui` version you're targeting. Elements, properties, parameters, allowed child types, and individual enum values can each be scoped to a specific version range, so using something not supported by the selected version is flagged with a clear message.
+
+``` html
+Property "layout" is not available for type "content" in version 3.5 (available from version 4.0).
+```
+
+![Feature not yet available in current version](images/version-aware-feature.gif)
+
+Pick your version from **Settings → GED Language Tools → Library Version**.Switching versions re-validates open files immediately.
+
+### File location warnings
+
+By default, warns if a `.ged` file lives outside `/resources/templates/`, since that's the convention `ci-lib-spring-gui` expects. Configurable per-project.
+
+![File not at expected '/resources/templates/' path](images/file-not-in-template-warning.gif)
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- VS Code `1.120.0` or later
+- No other dependencies — everything ships bundled with the extension
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+| Setting | Type | Default | Description |
+| --- | --- | --- | --- |
+| `gedLanguageTools.libraryVersion` | `string` (dropdown) | `"4.0"` | The `ci-lib-spring-gui` `.ged` language version to validate and autocomplete against. |
+| `gedLanguageTools.enableLocationCheck` | `boolean` | `true` | Warn when `.ged` files are located outside `/resources/templates/`. |
+| `gedLanguageTools.ignoredLocationPaths` | `string[]` | `[]` | Additional folder paths (relative or absolute, forward slashes) where `.ged` files are allowed without triggering the location warning. |
 
-For example:
+## How it works, briefly
 
-This extension contributes the following settings:
+- `.ged` are JSON files registered under their own `ged` language id.
+- Element/property/parameter definitions are defined per version of the library.
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+## Known limitations
 
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
+- none
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
-
 ### 1.0.0
 
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Initial release: version-aware validation for initial library version 4.0.0, context-aware completion, dedicated language id with its own formatter.

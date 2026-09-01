@@ -1,17 +1,20 @@
 {
   "name": "ged-language-tools",
   "displayName": "GED Language Tools",
-  "description": "Helper tool for .ged files for the ci-lib-spring-core project.",
-  "version": "0.0.1",
+  "description": "Helper tool for .ged files for the ci-lib-spring-gui library.",
+  "version": "1.0.0",
   "publisher": "cook-industries",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Cook-Industries/ged-language-tools.git"
+  },
+  "homepage": "https://github.com/cook-industries/ged-language-tools",
+  "icon": "images/ged-icon.png",
   "engines": {
     "vscode": "^1.120.0"
   },
   "categories": [
     "Programming Languages"
-  ],
-  "activationEvents": [
-    "onLanguage:json"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -46,10 +49,10 @@
             "4.0"
           ],
           "enumDescriptions": [
-            "ci-lib-spring-core 4.0.0"
+            "ci-lib-spring-gui 4.0.0"
           ],
           "default": "4.0",
-          "description": "The ci-lib-spring-core .ged language version to validate against. Elements, properties, parameters, and values introduced or removed in other versions will be flagged."
+          "description": "The ci-lib-spring-gui .ged language version to validate against. Elements, properties, parameters, and values introduced or removed in other versions will be flagged."
         },
         "gedLanguageTools.enableLocationCheck": {
           "type": "boolean",

@@ -6,9 +6,14 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
-- Initial release
+-
+
+## [1.0.0]
 
 ### Added
 
-- General check functionality
+- General functionality
+- added supported ci-lib-spring-gui version: 4.0.0
+- Auto-complete
+- Error highligthing
 - Changelog

@@ -15,44 +15,11 @@ import { getConfiguredVersion } from "../GedConfig";
 
 const RESERVED_KEYS = ["type", "parameters", "children"] as const;
 
-/**
- * A precomputed edit for a key that's already sitting inside a quoted
- * string (typically because typing `"` auto-closed the pair). `range`
- * covers just the interior of that string (excluding both quotes) and is
- * what gets replaced with the chosen key name. `insertAfter` is the
- * position right after the closing quote, where the ": <value>" scaffold
- * gets appended via additionalTextEdits — a *separate* edit, so it can
- * never collide with whatever quote characters already exist.
- */
 interface KeyEdit {
     range: vscode.Range;
     insertAfter: vscode.Position;
 }
 
-/**
- * Context-aware completions for .ged files, driven by the same
- * TypeRegistry + version-resolution logic as GedValidator.
- *
- * Handles:
- *  - "type" value                -> allowed types at this position
- *  - a new/existing property key -> valid properties for THIS element
- *  - a "parameters" key          -> valid parameters for THIS element
- *  - a parameter's value         -> its enumValues, if any
- *  - an empty slot in "children" -> a snippet per allowed child type
- *
- * Context is resolved by walking the actual parsed AST via each node's
- * `.parent` link (the same object/property/array shape GedValidator.ts
- * already relies on) rather than jsonc-parser's getLocation() path array
- * — path-array shape for a not-yet-typed key is easy to get subtly wrong,
- * which previously caused completions to resolve against the wrong
- * (usually parent) element. Walking real node relationships removes that
- * ambiguity entirely.
- *
- * All replacements use explicit, AST-derived vscode.Range values rather
- * than relying on VS Code's default word-based replacement, to avoid
- * double/missing quotes when the editor's auto-closing-pairs feature has
- * already inserted a matching quote or brace.
- */
 export class GedCompletionProvider
     implements vscode.CompletionItemProvider {
 
