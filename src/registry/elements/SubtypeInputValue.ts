@@ -1,4 +1,4 @@
-import { ELEMENT_SOURCE, REPETITION_SOURCE } from "../CommonParameters";
+import { ELEMENT_SOURCE, ELEMENT_SOURCE_IS_LIST } from "../CommonParameters";
 import { ATTRIBUTES_PROPERTY, CLASSES_PROPERTY, UID_PROPERTY } from "../CommonProperties";
 import { ElementDefinition, PropertyKind, ValueType } from "../ElementDefinitions";
 import { ElementTypes } from "../ElementTypes";
@@ -38,7 +38,7 @@ export const INPUT_VALUE: ElementDefinition = {
             description: "if this element is selected if applicable"
         },
 
-        repetitionSource: REPETITION_SOURCE,
+        elementSourceIsList: ELEMENT_SOURCE_IS_LIST,
 
         elementSource: ELEMENT_SOURCE
     },

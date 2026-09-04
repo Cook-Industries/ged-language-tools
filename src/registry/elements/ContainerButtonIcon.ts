@@ -1,4 +1,4 @@
-import { ELEMENT_SOURCE, REPETITION_SOURCE } from "../CommonParameters";
+import { BTN_CLASS, ELEMENT_SOURCE, ELEMENT_SOURCE_IS_LIST } from "../CommonParameters";
 import { ATTRIBUTES_PROPERTY, CLASSES_PROPERTY, UID_PROPERTY } from "../CommonProperties";
 import { ElementDefinition, PropertyKind, ValueType } from "../ElementDefinitions";
 
@@ -28,25 +28,7 @@ export const BUTTON_ICON: ElementDefinition = {
             required: true
         },
 
-        btnClass: {
-            kind: PropertyKind.SCALAR,
-            type: ValueType.STRING,
-            description: "Button text",
-            enumValues: [
-                "default",
-                "primary",
-                "secondary",
-                "sucess",
-                "warning",
-                "error",
-                "danger",
-                "info",
-                "light",
-                "dark",
-                "link",
-                "custom"
-            ]
-        },
+        btnClass: BTN_CLASS,
 
         tooltip: {
             kind: PropertyKind.SCALAR,
@@ -54,7 +36,7 @@ export const BUTTON_ICON: ElementDefinition = {
             description: "onhover tooltip"
         },
 
-        repetitionSource: REPETITION_SOURCE,
+        elementSourceIsList: ELEMENT_SOURCE_IS_LIST,
         elementSource: ELEMENT_SOURCE
     },
 

@@ -1,4 +1,4 @@
-import { ELEMENT_SOURCE, INPUT_DISABLED, INPUT_INFO_TEXT, INPUT_INFO_URL, INPUT_MANDATORY, INPUT_NAME, INPUT_ON_ENTER_PRESS, INPUT_ONINPUT, INPUT_PLACEHOLDER, INPUT_SUBMIT_AS, REPETITION_SOURCE, TOOLTIP } from "../CommonParameters";
+import { ELEMENT_SOURCE, INPUT_DISABLED, INPUT_INFO_TEXT, INPUT_INFO_URL, INPUT_MANDATORY, INPUT_NAME, INPUT_ON_ENTER_PRESS, INPUT_ONINPUT, INPUT_PLACEHOLDER, INPUT_SUBMIT_AS, ELEMENT_SOURCE_IS_LIST, TOOLTIP } from "../CommonParameters";
 import { ATTRIBUTES_PROPERTY, CLASSES_PROPERTY, UID_PROPERTY } from "../CommonProperties";
 import { ElementDefinition, PropertyKind, ValueType } from "../ElementDefinitions";
 import { ElementTypes } from "../ElementTypes";
@@ -35,7 +35,7 @@ export const INPUT_RADIO: ElementDefinition = {
 
         infoUrl: INPUT_INFO_URL,
 
-        repetitionSource: REPETITION_SOURCE,
+        elementSourceIsList: ELEMENT_SOURCE_IS_LIST,
 
         elementSource: ELEMENT_SOURCE,
 

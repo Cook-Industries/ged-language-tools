@@ -1,4 +1,4 @@
-import { ELEMENT_SOURCE, REPETITION_SOURCE, TOOLTIP } from "../CommonParameters";
+import { ELEMENT_SOURCE, INPUT_NAME, ELEMENT_SOURCE_IS_LIST, TOOLTIP } from "../CommonParameters";
 import { ATTRIBUTES_PROPERTY, CLASSES_PROPERTY, UID_PROPERTY } from "../CommonProperties";
 import { ElementDefinition, PropertyKind, ValueType } from "../ElementDefinitions";
 import { ElementTypes } from "../ElementTypes";
@@ -15,7 +15,10 @@ export const INPUT_TEXTBOX: ElementDefinition = {
     },
 
     parameters: {
-        repetitionSource: REPETITION_SOURCE,
+
+        name: INPUT_NAME,
+
+        elementSourceIsList: ELEMENT_SOURCE_IS_LIST,
 
         elementSource: ELEMENT_SOURCE,
 

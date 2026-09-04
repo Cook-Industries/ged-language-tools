@@ -12,10 +12,10 @@ export const TOOLTIP: ParameterDefinition = {
     description: "tooltip text",
 };
 
-export const REPETITION_SOURCE: ParameterDefinition = {
+export const ELEMENT_SOURCE_IS_LIST: ParameterDefinition = {
     kind: PropertyKind.SCALAR,
-    type: ValueType.STRING,
-    description: "name of a source list of FlatMappableList for repetition of this element",
+    type: ValueType.BOOLEAN,
+    description: "true if elementSource references a FlatMappableList for repetition",
 };
 
 export const ELEMENT_SOURCE: ParameterDefinition = {
@@ -80,6 +80,26 @@ export const INPUT_MANDATORY: ParameterDefinition = {
     description: "whether this input is mandatory"
 };
 
+export const BTN_CLASS: ParameterDefinition = {
+    kind: PropertyKind.SCALAR,
+    type: ValueType.STRING,
+    description: "color type of this button",
+    enumValues: [
+        "default",
+        "primary",
+        "secondary",
+        "success",
+        "warning",
+        "error",
+        "danger",
+        "info",
+        "light",
+        "dark",
+        "link",
+        "custom"
+    ]
+};
+
 // Conflicts
-REPETITION_SOURCE.conflictsWith = [ELEMENT_SOURCE];
-ELEMENT_SOURCE.conflictsWith = [REPETITION_SOURCE];
+//ELEMENT_SOURCE_IS_LIST.conflictsWith = [ELEMENT_SOURCE];
+//ELEMENT_SOURCE.conflictsWith = [ELEMENT_SOURCE_IS_LIST];

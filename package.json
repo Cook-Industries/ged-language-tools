@@ -2,7 +2,7 @@
   "name": "ged-language-tools",
   "displayName": "GED Language Tools",
   "description": "Helper tool for .ged files for the ci-lib-spring-gui library.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "cook-industries",
   "repository": {
     "type": "git",

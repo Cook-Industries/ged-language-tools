@@ -1,4 +1,4 @@
-import { ELEMENT_SOURCE } from "../CommonParameters";
+import { BTN_CLASS, ELEMENT_SOURCE } from "../CommonParameters";
 import { ATTRIBUTES_PROPERTY, CLASSES_PROPERTY, UID_PROPERTY } from "../CommonProperties";
 import { ElementDefinition, PropertyKind, ValueType } from "../ElementDefinitions";
 import { ElementTypes } from "../ElementTypes";
@@ -41,25 +41,7 @@ export const MODAL: ElementDefinition = {
             description: "name of the left button"
         },
 
-        btnLeftClass: {
-            kind: PropertyKind.SCALAR,
-            type: ValueType.STRING,
-            description: "name of the left button",
-            enumValues: [
-                "default",
-                "primary",
-                "secondary",
-                "success",
-                "warning",
-                "error",
-                "danger",
-                "info",
-                "light",
-                "dark",
-                "link",
-                "custom"
-            ]
-        },
+        btnLeftClass: BTN_CLASS,
 
         btnLeftFunction: {
             kind: PropertyKind.SCALAR,
@@ -73,25 +55,7 @@ export const MODAL: ElementDefinition = {
             description: "name of the center button"
         },
 
-        btnCenterClass: {
-            kind: PropertyKind.SCALAR,
-            type: ValueType.STRING,
-            description: "name of the center button",
-            enumValues: [
-                "default",
-                "primary",
-                "secondary",
-                "success",
-                "warning",
-                "error",
-                "danger",
-                "info",
-                "light",
-                "dark",
-                "link",
-                "custom"
-            ]
-        },
+        btnCenterClass: BTN_CLASS,
 
         btnCenterFunction: {
             kind: PropertyKind.SCALAR,
@@ -107,25 +71,7 @@ export const MODAL: ElementDefinition = {
             description: "name of the right button"
         },
 
-        btnRightClass: {
-            kind: PropertyKind.SCALAR,
-            type: ValueType.STRING,
-            description: "name of the right button",
-            enumValues: [
-                "default",
-                "primary",
-                "secondary",
-                "success",
-                "warning",
-                "error",
-                "danger",
-                "info",
-                "light",
-                "dark",
-                "link",
-                "custom"
-            ]
-        },
+        btnRightClass: BTN_CLASS,
 
         btnRightFunction: {
             kind: PropertyKind.SCALAR,

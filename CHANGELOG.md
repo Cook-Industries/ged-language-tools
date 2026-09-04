@@ -4,11 +4,17 @@ All notable changes to the "ged-language-tools" extension will be documented in 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [Unreleased]
+## [1.0.1]
 
--
+### Fixed
 
-## [1.0.0]
+- elementSource reference text
+- hint text in InputTextarea
+- added $$class$ replacer value
+- writing error on btnClass enum value
+- generalized btnClass to CommonParameters
+
+## [1.0.0] - 2026-08-31
 
 ### Added
 

@@ -1,4 +1,4 @@
-const REPLACEMENT_IDENTIFIERS = ["value", "text", "function"] as const;
+const REPLACEMENT_IDENTIFIERS = ["value", "text", "function", "class"] as const;
 type ReplacementIdentifier = typeof REPLACEMENT_IDENTIFIERS[number];
 
 const REPLACEMENT_PATTERN = /^\$\$(?<identifier>[A-Za-z]+)\$(?<name>[A-Za-z_][A-Za-z0-9_\-]*)$/;
