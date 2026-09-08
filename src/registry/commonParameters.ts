@@ -1,6 +1,6 @@
 import { ParameterDefinition, PropertyKind, ValueType } from "./ElementDefinitions";
 
-export const uidParam: ParameterDefinition = {
+export const UID: ParameterDefinition = {
     kind: PropertyKind.SCALAR,
     type: ValueType.STRING,
     description: "uid for this element"
@@ -99,6 +99,32 @@ export const BTN_CLASS: ParameterDefinition = {
         "custom"
     ]
 };
+
+export const INPUT_NUMBER_VALUE: ParameterDefinition = {
+    kind: PropertyKind.SCALAR,
+    type: ValueType.NUMBER,
+    description: "value  (integer/double)"
+};
+
+export const INPUT_NUMBER_MIN: ParameterDefinition = {
+    kind: PropertyKind.SCALAR,
+    type: ValueType.NUMBER,
+    description: "minimal value (integer/double depending on 'value' type)"
+};
+
+export const INPUT_NUMBER_MAX: ParameterDefinition = {
+    kind: PropertyKind.SCALAR,
+    type: ValueType.NUMBER,
+    description: "maximal value (integer/double depending on 'value' type)"
+};
+
+export const INPUT_NUMBER_STEP: ParameterDefinition = {
+    kind: PropertyKind.SCALAR,
+    type: ValueType.NUMBER,
+    description: "step size (integer/double depending on 'value' type)"
+};
+
+
 
 // Conflicts
 //ELEMENT_SOURCE_IS_LIST.conflictsWith = [ELEMENT_SOURCE];

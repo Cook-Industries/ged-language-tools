@@ -1,4 +1,4 @@
-import { ELEMENT_SOURCE, ELEMENT_SOURCE_IS_LIST } from "../CommonParameters";
+import { ELEMENT_SOURCE, ELEMENT_SOURCE_IS_LIST, TOOLTIP } from "../CommonParameters";
 import { ATTRIBUTES_PROPERTY, CLASSES_PROPERTY, UID_PROPERTY } from "../CommonProperties";
 import { ElementDefinition } from "../ElementDefinitions";
 import { ElementTypes } from "../ElementTypes";
@@ -15,6 +15,7 @@ export const CONTENT: ElementDefinition = {
     },
 
     parameters: {
+        tooltip: TOOLTIP,
         elementSourceIsList: ELEMENT_SOURCE_IS_LIST,
         elementSource: ELEMENT_SOURCE
     },

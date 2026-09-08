@@ -28,7 +28,6 @@ export const SVG: ElementDefinition = {
         },
 
         elementSourceIsList: ELEMENT_SOURCE_IS_LIST,
-
         elementSource: ELEMENT_SOURCE
     },
 

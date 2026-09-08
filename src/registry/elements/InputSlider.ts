@@ -1,4 +1,4 @@
-import { ELEMENT_SOURCE, INPUT_DISABLED, INPUT_INFO_TEXT, INPUT_INFO_URL, INPUT_MANDATORY, INPUT_NAME, INPUT_ONINPUT, INPUT_SUBMIT_AS, ELEMENT_SOURCE_IS_LIST, TOOLTIP } from "../CommonParameters";
+import { ELEMENT_SOURCE, INPUT_DISABLED, INPUT_INFO_TEXT, INPUT_INFO_URL, INPUT_MANDATORY, INPUT_NAME, INPUT_ONINPUT, INPUT_SUBMIT_AS, ELEMENT_SOURCE_IS_LIST, TOOLTIP, INPUT_NUMBER_VALUE, INPUT_NUMBER_MIN, INPUT_NUMBER_MAX, INPUT_NUMBER_STEP } from "../CommonParameters";
 import { ATTRIBUTES_PROPERTY, CLASSES_PROPERTY, UID_PROPERTY } from "../CommonProperties";
 import { ElementDefinition, PropertyKind, ValueType } from "../ElementDefinitions";
 import { ElementTypes } from "../ElementTypes";
@@ -35,24 +35,13 @@ export const INPUT_SLIDER: ElementDefinition = {
 
         elementSource: ELEMENT_SOURCE,
 
+        value: INPUT_NUMBER_VALUE,
 
-        value: {
-            kind: PropertyKind.SCALAR,
-            type: ValueType.NUMBER,
-            description: "current value"
-        },
+        min: INPUT_NUMBER_MIN,
 
-        min: {
-            kind: PropertyKind.SCALAR,
-            type: ValueType.NUMBER,
-            description: "minimal value"
-        },
+        max: INPUT_NUMBER_MAX,
 
-        max: {
-            kind: PropertyKind.SCALAR,
-            type: ValueType.NUMBER,
-            description: "maximal value"
-        }
+        step: INPUT_NUMBER_STEP
     },
 
     allowedChildren: []

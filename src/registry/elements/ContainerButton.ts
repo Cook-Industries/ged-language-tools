@@ -1,4 +1,4 @@
-import { BTN_CLASS, ELEMENT_SOURCE, ELEMENT_SOURCE_IS_LIST } from "../CommonParameters";
+import { BTN_CLASS, ELEMENT_SOURCE, ELEMENT_SOURCE_IS_LIST, TOOLTIP } from "../CommonParameters";
 import { ATTRIBUTES_PROPERTY, CLASSES_PROPERTY, UID_PROPERTY } from "../CommonProperties";
 import { ElementDefinition, PropertyKind, ValueType } from "../ElementDefinitions";
 
@@ -29,6 +29,8 @@ export const BUTTON: ElementDefinition = {
         },
 
         btnClass: BTN_CLASS,
+
+        tooltip: TOOLTIP,
 
         elementSourceIsList: ELEMENT_SOURCE_IS_LIST,
         elementSource: ELEMENT_SOURCE

@@ -13,6 +13,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - added $$class$ replacer value
 - writing error on btnClass enum value
 - generalized btnClass to CommonParameters
+- removed parameters from InputTextField
+- updated numeric fields InputNumber, InputSlider
+- fixed several parameter names
+- extracted parameters to common
 
 ## [1.0.0] - 2026-08-31
 

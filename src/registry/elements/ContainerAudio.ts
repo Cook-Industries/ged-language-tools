@@ -1,4 +1,4 @@
-import { ELEMENT_SOURCE, ELEMENT_SOURCE_IS_LIST } from "../CommonParameters";
+import { ELEMENT_SOURCE, ELEMENT_SOURCE_IS_LIST, TOOLTIP } from "../CommonParameters";
 import { ATTRIBUTES_PROPERTY, CLASSES_PROPERTY, UID_PROPERTY } from "../CommonProperties";
 import { ElementDefinition, PropertyKind, ValueType } from "../ElementDefinitions";
 
@@ -14,6 +14,13 @@ export const AUDIO: ElementDefinition = {
     },
 
     parameters: {
+        caption: {
+            kind: PropertyKind.SCALAR,
+            type: ValueType.STRING,
+            description: "caption to describe this audio element",
+            required: true
+        },
+
         src: {
             kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
@@ -21,24 +28,19 @@ export const AUDIO: ElementDefinition = {
             required: true
         },
 
-        newFeature: {
-            kind: PropertyKind.SCALAR,
-            type: ValueType.STRING,
-            description: "Button text",
-            since: "5.0.0"
-        },
-
         controls: {
             kind: PropertyKind.SCALAR,
             type: ValueType.BOOLEAN,
-            description: "if controls are shown"
+            description: "should controls show (default: true)"
         },
 
         autoplay: {
             kind: PropertyKind.SCALAR,
             type: ValueType.BOOLEAN,
-            description: "autoplay active"
+            description: "autoplay active (default: false)"
         },
+
+        tooltip: TOOLTIP,
 
         elementSourceIsList: ELEMENT_SOURCE_IS_LIST,
         elementSource: ELEMENT_SOURCE

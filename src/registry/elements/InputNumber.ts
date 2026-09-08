@@ -1,4 +1,4 @@
-import { ELEMENT_SOURCE, INPUT_DISABLED, INPUT_INFO_TEXT, INPUT_INFO_URL, INPUT_MANDATORY, INPUT_NAME, INPUT_ON_ENTER_PRESS, INPUT_ONINPUT, INPUT_PLACEHOLDER, INPUT_SUBMIT_AS, ELEMENT_SOURCE_IS_LIST, TOOLTIP } from "../CommonParameters";
+import { ELEMENT_SOURCE, INPUT_DISABLED, INPUT_INFO_TEXT, INPUT_INFO_URL, INPUT_MANDATORY, INPUT_NAME, INPUT_ON_ENTER_PRESS, INPUT_ONINPUT, INPUT_PLACEHOLDER, INPUT_SUBMIT_AS, ELEMENT_SOURCE_IS_LIST, TOOLTIP, INPUT_NUMBER_VALUE, INPUT_NUMBER_MIN, INPUT_NUMBER_MAX, INPUT_NUMBER_STEP } from "../CommonParameters";
 import { ATTRIBUTES_PROPERTY, CLASSES_PROPERTY, UID_PROPERTY } from "../CommonProperties";
 import { ElementDefinition, PropertyKind, ValueType } from "../ElementDefinitions";
 import { ElementTypes } from "../ElementTypes";
@@ -39,23 +39,13 @@ export const INPUT_NUMBER: ElementDefinition = {
 
         elementSource: ELEMENT_SOURCE,
 
-        valueF: {
-            kind: PropertyKind.SCALAR,
-            type: ValueType.NUMBER,
-            description: "front value"
-        },
+        value: INPUT_NUMBER_VALUE,
 
-        min: {
-            kind: PropertyKind.SCALAR,
-            type: ValueType.NUMBER,
-            description: "minimal valueF"
-        },
+        min: INPUT_NUMBER_MIN,
 
-        max: {
-            kind: PropertyKind.SCALAR,
-            type: ValueType.NUMBER,
-            description: "maximal valueF"
-        }
+        max: INPUT_NUMBER_MAX,
+
+        step: INPUT_NUMBER_STEP
     },
 
     allowedChildren: []

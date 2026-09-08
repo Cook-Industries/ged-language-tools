@@ -22,7 +22,6 @@ export const MODAL: ElementDefinition = {
             required: true
         },
 
-
         requestUrl: {
             kind: PropertyKind.SCALAR,
             type: ValueType.STRING,

@@ -22,7 +22,6 @@ export const IMAGE: ElementDefinition = {
         },
 
         tooltip: TOOLTIP,
-
         elementSourceIsList: ELEMENT_SOURCE_IS_LIST,
         elementSource: ELEMENT_SOURCE
     },

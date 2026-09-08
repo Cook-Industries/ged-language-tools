@@ -39,10 +39,10 @@ export const INPUT_RADIO: ElementDefinition = {
 
         elementSource: ELEMENT_SOURCE,
 
-        radios: {
+        boxes: {
             kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
-            description: "name of a InputValueList source or if emtpy use children of this element"
+            description: "name of a InputValueList source"
         }
     },
 

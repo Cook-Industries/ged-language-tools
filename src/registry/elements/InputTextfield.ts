@@ -45,22 +45,16 @@ export const INPUT_TEXTFIELD: ElementDefinition = {
             description: "text"
         },
 
-        prefix: {
+        pattern: {
             kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
-            description: "prefix text to show"
-        },
-
-        suffix: {
-            kind: PropertyKind.SCALAR,
-            type: ValueType.STRING,
-            description: "suffix text to show"
+            description: "regex pattern to apply to this input"
         },
 
         maxChars: {
             kind: PropertyKind.SCALAR,
             type: ValueType.NUMBER,
-            description: "suffix text to show"
+            description: "maximal allowed chars"
         }
     },
 

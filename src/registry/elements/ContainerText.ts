@@ -22,13 +22,13 @@ export const TEXT: ElementDefinition = {
             required: true
         },
 
-        tooltip: TOOLTIP,
-
         inline: {
             kind: PropertyKind.SCALAR,
             type: ValueType.BOOLEAN,
             description: "inline"
         },
+
+        tooltip: TOOLTIP,
 
         elementSourceIsList: ELEMENT_SOURCE_IS_LIST,
         elementSource: ELEMENT_SOURCE

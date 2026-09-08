@@ -33,16 +33,16 @@ export const INPUT_TAG: ElementDefinition = {
 
         elementSource: ELEMENT_SOURCE,
 
-        value: {
-            kind: PropertyKind.SCALAR,
+        tags: {
+            kind: PropertyKind.LIST,
             type: ValueType.STRING,
-            description: "comma seperated list of tags"
+            description: "list of tags"
         },
 
         pattern: {
             kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
-            description: "regex to which tags must adhere"
+            description: "regex to which tags must adhere (default: '#?[a-zA-Z]{1}[a-zA-Z0-9\\-]{2,*}')"
         },
 
         fetchUrl: {
@@ -54,19 +54,19 @@ export const INPUT_TAG: ElementDefinition = {
         searchUrl: {
             kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
-            description: "url from against which searches for autocomplete shoudld happen"
+            description: "url against which searches for autocomplete should happen"
         },
 
         enforceWhitelist: {
             kind: PropertyKind.SCALAR,
             type: ValueType.BOOLEAN,
-            description: "whether or not not white-listed tags are allowed"
+            description: "whether or not only white-listed tags are allowed"
         },
 
         maxTags: {
             kind: PropertyKind.SCALAR,
             type: ValueType.NUMBER,
-            description: "how many tags are allowed"
+            description: "how many tags are allowed (integer)"
         }
     },
 

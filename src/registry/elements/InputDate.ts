@@ -39,6 +39,24 @@ export const INPUT_DATE: ElementDefinition = {
             kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
             description: "text"
+        },
+
+        min: {
+            kind: PropertyKind.SCALAR,
+            type: ValueType.STRING,
+            description: "minimal allowed date (yyyy-mm-dd)"
+        },
+
+        max: {
+            kind: PropertyKind.SCALAR,
+            type: ValueType.STRING,
+            description: "maximal allowed date (yyyy-mm-dd)"
+        },
+
+        step: {
+            kind: PropertyKind.SCALAR,
+            type: ValueType.NUMBER,
+            description: "step size in days (integer)"
         }
     },
 

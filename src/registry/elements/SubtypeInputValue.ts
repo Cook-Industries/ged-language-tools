@@ -14,16 +14,18 @@ export const INPUT_VALUE: ElementDefinition = {
     },
 
     parameters: {
-        id: {
+        uid: {
             kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
-            description: "sendable unique id of this element"
+            description: "unique id of this element under which it gets send if applicable",
+            required: true
         },
 
         text: {
             kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
-            description: "text of this element"
+            description: "text of this element",
+            required: true
         },
 
         value: {
