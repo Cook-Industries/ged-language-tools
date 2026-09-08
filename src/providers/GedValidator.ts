@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import * as json from "jsonc-parser";
 
-import { ElementDefinition, ParameterDefinition, PropertyDefinition, PropertyKind, PropertyState, SYSTEM_FIELDS, ValueType } from "../registry/ElementDefinitions";
+import { ElementDefinition, ParameterDefinition, PropertyDefinition, PropertyKind, PropertyState, resolveRequired, SYSTEM_FIELDS, ValueType } from "../registry/ElementDefinitions";
 import {
     findDefinition,
     resolveAllowedChildren,
@@ -12,6 +12,7 @@ import {
 import { parseReplacementValue } from "../registry/ReplacementValue";
 import { describeVersionConstraint, isVersionSupported, VersionString } from "../Version";
 import { getConfiguredVersion } from "../GedConfig";
+import { getRegistryKey } from "../registry/ElementTypes";
 
 
 // Cache of location diagnostics per document, so content-only validation
@@ -85,7 +86,7 @@ function validateDocumentContent(
             errors,
             {
                 offset: error.offset,
-                length: error.length,
+                length: error.length
             } as json.Node,
             json.printParseErrorCode(error.error)
         );
@@ -104,8 +105,7 @@ function validateDocumentContent(
 
     if (rootType?.type === "string") {
 
-        const rootDefinition =
-            findDefinition(rootType.value as string, version);
+        const rootDefinition = findDefinition(rootType.value as string, version);
 
         if (!rootDefinition) {
 
@@ -113,7 +113,7 @@ function validateDocumentContent(
                 document,
                 errors,
                 rootType,
-                `Root type "${rootType.value}" not found in TypeRegistry.`,
+                `Root type "${rootType.value}" not found in TypeRegistry.`
             );
 
         } else {
@@ -127,7 +127,7 @@ function validateDocumentContent(
                 rootDefinition,
                 document,
                 errors,
-                version,
+                version
             );
 
             validateParameters(
@@ -135,14 +135,14 @@ function validateDocumentContent(
                 rootDefinition,
                 document,
                 errors,
-                version,
+                version
             );
 
-            const rootChildren =
-                resolveAllowedChildren(rootDefinition, version);
+            const rootChildren = resolveAllowedChildren(rootDefinition, version);
 
-            const childrenNode =
-                getProperty(root, "children")?.children?.[1];
+            const childrenNode = getProperty(root, "children")?.children?.[1];
+
+            const rootDefinitionKey = getRegistryKey(rootDefinition);
 
             if (childrenNode?.type === "array") {
 
@@ -154,6 +154,7 @@ function validateDocumentContent(
                         document,
                         errors,
                         version,
+                        rootDefinitionKey
                     );
                 }
             }
@@ -234,15 +235,14 @@ function validateTree(
     document: vscode.TextDocument,
     diagnostics: vscode.Diagnostic[],
     version: VersionString,
+    parentType?: string
 ): void {
 
-    const typeNode =
-        getProperty(node, "type")?.children?.[1];
+    const typeNode = getProperty(node, "type")?.children?.[1];
 
     if (!typeNode || typeNode.type !== "string") {
         return;
     }
-
 
     const nodeType = typeNode.value as string;
 
@@ -281,7 +281,7 @@ function validateTree(
         definition,
         document,
         diagnostics,
-        version,
+        version
     );
 
     validateParameters(
@@ -290,6 +290,7 @@ function validateTree(
         document,
         diagnostics,
         version,
+        parentType
     );
 
 
@@ -297,18 +298,17 @@ function validateTree(
     // This node is now resolved.
     // Generate the list valid ONLY for its direct children.
     //
-    const childDefinitions =
-        resolveAllowedChildren(definition, version);
+    const childDefinitions = resolveAllowedChildren(definition, version);
 
 
-    const childrenNode =
-        getProperty(node, "children")?.children?.[1];
+    const childrenNode = getProperty(node, "children")?.children?.[1];
 
 
     if (!childrenNode || childrenNode.type !== "array") {
         return;
     }
 
+    const definitionKey = getRegistryKey(definition);
 
     //
     // Push this node's child list down one level
@@ -321,6 +321,7 @@ function validateTree(
             document,
             diagnostics,
             version,
+            definitionKey
         );
     }
 }
@@ -591,6 +592,7 @@ function validateParameters(
     document: vscode.TextDocument,
     diagnostics: vscode.Diagnostic[],
     version: VersionString,
+    parentType?: string
 ): void {
 
     const parametersProperty = getProperty(node, "parameters");
@@ -740,7 +742,7 @@ function validateParameters(
         //
         if (!valueNode) {
 
-            if (paramDef.required) {
+            if (resolveRequired(paramDef, parentType)) {
 
                 addDiagnostic(
                     document,

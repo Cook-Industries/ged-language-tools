@@ -51,7 +51,12 @@ export function isVersionedEnumValue(
 interface ParameterDefinitionBase extends VersionRange {
     description: string;
 
-    required?: boolean;
+    /**
+    * true/false = always (not) required, regardless of parent.
+    * ElementTypes[] = required, EXCEPT when the parent element's type
+    * is one of the listed types (in which case it becomes optional).
+    */
+    required?: boolean | ElementTypes[];
 
     enumValues?: Array<EnumValue | VersionedEnumValue>;
 
@@ -128,4 +133,34 @@ export interface ElementDefinition extends VersionRange {
     parameters: Record<string, ParameterDefinition>;
 
     properties: Record<string, PropertyDefinition>;
+}
+
+/**
+ * Resolves a ParameterDefinition's `required` field against the actual
+ * parent element type. A plain boolean is returned as-is. An array is
+ * treated as an inclusion list: required only when parentType is in it.
+ */
+export function resolveRequired(
+    parameter: ParameterDefinition,
+    parentType?: string,
+): boolean {
+
+    const { required } = parameter;
+
+    if (required === undefined) {
+        return false;
+    }
+
+    if (typeof required === "boolean") {
+        return required;
+    }
+
+    // required is ElementTypes[] — an inclusion list
+    if (!parentType) {
+        return false;
+    }
+
+    return required.some(
+        (requiredUnderType) => requiredUnderType.toLowerCase() === parentType.toLowerCase()
+    );
 }

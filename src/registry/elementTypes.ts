@@ -111,3 +111,16 @@ export const TypeRegistry: Record<string, ElementDefinition> = {
     [ElementTypes.SUBTYPE_TABLE_ROW]: TABLE_ROW,
     [ElementTypes.SVG_TEXT]: SVG_TEXT
 };
+
+export function getRegistryKey(
+    definition: ElementDefinition,
+): ElementTypes | undefined {
+
+    for (const key in TypeRegistry) {
+        if (TypeRegistry[key] === definition) {
+            return key as ElementTypes;
+        }
+    }
+
+    return undefined;
+}

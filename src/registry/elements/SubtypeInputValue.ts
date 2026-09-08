@@ -14,11 +14,11 @@ export const INPUT_VALUE: ElementDefinition = {
     },
 
     parameters: {
-        uid: {
+        submitAs: {
             kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
             description: "unique id of this element under which it gets send if applicable",
-            required: true
+            required: [ElementTypes.INPUT_CHECKBOX]
         },
 
         text: {
