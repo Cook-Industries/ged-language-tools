@@ -6,6 +6,17 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [1.0.1]
 
+### Added
+
+- InputSlider: parameters customValues and marks, value also accepts strings
+- ContainerBurger: parameter btnClass
+- SubtypeBurgerItem: parameter iconSize
+- ContainerButtonIcon: parameter alt
+- ContainerContent: parameter direction
+- InputTextfield: parameter onKeydown
+- InputTextarea: parameters onKeydown, rows, cols
+- Setting ignoredPaths: skips validation for matching files
+
 ### Fixed
 
 - elementSource reference text

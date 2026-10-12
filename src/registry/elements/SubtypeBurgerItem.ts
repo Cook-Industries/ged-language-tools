@@ -42,6 +42,12 @@ export const BURGER_ITEM: ElementDefinition = {
             description: "icon url"
         },
 
+        iconSize: {
+            kind: PropertyKind.SCALAR,
+            type: ValueType.NUMBER,
+            description: "icon size in rem (positive integer, default: size of the stylesheet)"
+        },
+
         elementSourceIsList: ELEMENT_SOURCE_IS_LIST,
 
         elementSource: ELEMENT_SOURCE

@@ -66,6 +66,14 @@
           },
           "default": [],
           "description": "Additional folder paths (relative or absolute, forward slashes) where .ged files are allowed without triggering the location warning."
+        },
+        "gedLanguageTools.ignoredPaths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Paths (relative or absolute, forward slashes) whose .ged files are not validated at all. A file is ignored if its full path contains one of the entries. Set it in the workspace settings to apply it per project."
         }
       }
     }

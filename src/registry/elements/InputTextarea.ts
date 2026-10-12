@@ -27,6 +27,12 @@ export const INPUT_TEXTAREA: ElementDefinition = {
 
         placeholder: INPUT_PLACEHOLDER,
 
+        onKeydown: {
+            kind: PropertyKind.SCALAR,
+            type: ValueType.STRING,
+            description: "function call to trigger on any key press"
+        },
+
         tooltip: TOOLTIP,
 
         infoText: INPUT_INFO_TEXT,
@@ -47,6 +53,18 @@ export const INPUT_TEXTAREA: ElementDefinition = {
             kind: PropertyKind.SCALAR,
             type: ValueType.NUMBER,
             description: "maximal allowed characters"
+        },
+
+        rows: {
+            kind: PropertyKind.SCALAR,
+            type: ValueType.NUMBER,
+            description: "visible text lines (positive integer, default: 5)"
+        },
+
+        cols: {
+            kind: PropertyKind.SCALAR,
+            type: ValueType.NUMBER,
+            description: "visible character width (positive integer, default: width of the stylesheet)"
         }
     },
 

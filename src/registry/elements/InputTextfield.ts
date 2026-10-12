@@ -29,6 +29,12 @@ export const INPUT_TEXTFIELD: ElementDefinition = {
 
         onEnterPress: INPUT_ON_ENTER_PRESS,
 
+        onKeydown: {
+            kind: PropertyKind.SCALAR,
+            type: ValueType.STRING,
+            description: "function call to trigger on any key press"
+        },
+
         tooltip: TOOLTIP,
 
         infoText: INPUT_INFO_TEXT,

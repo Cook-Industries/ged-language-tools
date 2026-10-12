@@ -10,6 +10,7 @@ export const SYSTEM_FIELDS = new Set([
 export enum ValueType {
     STRING = "string",
     NUMBER = "number",
+    NUMBER_OR_STRING = "number or string",
     BOOLEAN = "boolean",
 }
 

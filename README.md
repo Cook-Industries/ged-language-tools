@@ -60,6 +60,7 @@ By default, warns if a `.ged` file lives outside `/resources/templates/`, since 
 | `gedLanguageTools.libraryVersion` | `string` (dropdown) | `"4.0"` | The `ci-lib-spring-gui` `.ged` language version to validate and autocomplete against. |
 | `gedLanguageTools.enableLocationCheck` | `boolean` | `true` | Warn when `.ged` files are located outside `/resources/templates/`. |
 | `gedLanguageTools.ignoredLocationPaths` | `string[]` | `[]` | Additional folder paths (relative or absolute, forward slashes) where `.ged` files are allowed without triggering the location warning. |
+| `gedLanguageTools.ignoredPaths` | `string[]` | `[]` | Paths (relative or absolute, forward slashes) whose `.ged` files are not validated at all. Matched as a substring of the full file path. Set it in the workspace settings to apply it per project. |
 
 ## How it works, briefly
 

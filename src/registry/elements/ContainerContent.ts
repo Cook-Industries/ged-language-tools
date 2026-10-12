@@ -1,7 +1,8 @@
 import { ELEMENT_SOURCE, ELEMENT_SOURCE_IS_LIST, TOOLTIP } from "../CommonParameters";
 import { ATTRIBUTES_PROPERTY, CLASSES_PROPERTY, UID_PROPERTY } from "../CommonProperties";
-import { ElementDefinition } from "../ElementDefinitions";
+import { ElementDefinition, PropertyKind, ValueType } from "../ElementDefinitions";
 import { ElementTypes } from "../ElementTypes";
+import { Direction } from "./Direction";
 
 export const CONTENT: ElementDefinition = {
     type: "content",
@@ -15,6 +16,19 @@ export const CONTENT: ElementDefinition = {
     },
 
     parameters: {
+        direction: {
+            kind: PropertyKind.SCALAR,
+            type: ValueType.STRING,
+            description: "direction",
+            enumValues: [
+                Direction.NONE,
+                Direction.HORIZONTAL,
+                Direction.VERTICAL,
+                Direction.HORIZONTAL_REVERSE,
+                Direction.VERTICAL_REVERSE
+            ]
+        },
+
         tooltip: TOOLTIP,
         elementSourceIsList: ELEMENT_SOURCE_IS_LIST,
         elementSource: ELEMENT_SOURCE

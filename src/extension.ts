@@ -60,6 +60,7 @@ export function activate(context: vscode.ExtensionContext) {
             if (
                 event.affectsConfiguration("gedLanguageTools.enableLocationCheck") ||
                 event.affectsConfiguration("gedLanguageTools.ignoredLocationPaths") ||
+                event.affectsConfiguration("gedLanguageTools.ignoredPaths") ||
                 event.affectsConfiguration("gedLanguageTools.libraryVersion")
             ) {
                 vscode.workspace.textDocuments

@@ -14,17 +14,17 @@ export const AUDIO: ElementDefinition = {
     },
 
     parameters: {
-        caption: {
-            kind: PropertyKind.SCALAR,
-            type: ValueType.STRING,
-            description: "caption to describe this audio element",
-            required: true
-        },
-
         src: {
             kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
             description: "source url",
+            required: true
+        },
+
+        caption: {
+            kind: PropertyKind.SCALAR,
+            type: ValueType.STRING,
+            description: "caption to describe this audio element",
             required: true
         },
 
@@ -38,6 +38,25 @@ export const AUDIO: ElementDefinition = {
             kind: PropertyKind.SCALAR,
             type: ValueType.BOOLEAN,
             description: "autoplay active (default: false)"
+        },
+
+        loop: {
+            kind: PropertyKind.SCALAR,
+            type: ValueType.BOOLEAN,
+            description: "track should be looped (default: false)"
+        },
+
+        muted: {
+            kind: PropertyKind.SCALAR,
+            type: ValueType.BOOLEAN,
+            description: "initial volume level is zero  (default: false)"
+        },
+
+        preload: {
+            kind: PropertyKind.SCALAR,
+            type: ValueType.STRING,
+            description: "autoplay active (default: auto)",
+            enumValues: ["none", "metadata", "auto"]
         },
 
         tooltip: TOOLTIP,

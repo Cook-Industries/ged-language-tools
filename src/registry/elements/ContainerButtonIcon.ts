@@ -28,6 +28,12 @@ export const BUTTON_ICON: ElementDefinition = {
             required: true
         },
 
+        alt: {
+            kind: PropertyKind.SCALAR,
+            type: ValueType.STRING,
+            description: "accessible name of the icon button"
+        },
+
         btnClass: BTN_CLASS,
 
         tooltip: TOOLTIP,

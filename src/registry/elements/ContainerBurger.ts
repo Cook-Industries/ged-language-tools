@@ -1,4 +1,4 @@
-import { ELEMENT_SOURCE, ELEMENT_SOURCE_IS_LIST, TOOLTIP } from "../CommonParameters";
+import { BTN_CLASS, ELEMENT_SOURCE, ELEMENT_SOURCE_IS_LIST, TOOLTIP } from "../CommonParameters";
 import { ATTRIBUTES_PROPERTY, CLASSES_PROPERTY, UID_PROPERTY } from "../CommonProperties";
 import { ElementDefinition, PropertyKind, ValueType } from "../ElementDefinitions";
 import { ElementTypes } from "../ElementTypes";
@@ -20,6 +20,8 @@ export const BURGER: ElementDefinition = {
             type: ValueType.STRING,
             description: "icon url"
         },
+
+        btnClass: BTN_CLASS,
 
         tooltip: TOOLTIP,
 

@@ -67,6 +67,11 @@ function validateDocumentContent(
     seedErrors: vscode.Diagnostic[],
 ): void {
 
+    if (isIgnoredPath(document)) {
+        diagnostics.delete(document.uri);
+        return;
+    }
+
     const version = getConfiguredVersion();
 
     const errors: vscode.Diagnostic[] = [...seedErrors];
@@ -190,6 +195,17 @@ function addDiagnostic(
             severity,
         ),
     );
+}
+
+function isIgnoredPath(document: vscode.TextDocument): boolean {
+
+    const filePath = document.uri.fsPath.replace(/\\/g, "/");
+
+    return vscode.workspace
+        .getConfiguration("gedLanguageTools")
+        .get<string[]>("ignoredPaths", [])
+        .map((ignoredPath) => ignoredPath.replace(/\\/g, "/"))
+        .some((ignoredPath) => ignoredPath.length > 0 && filePath.includes(ignoredPath));
 }
 
 function computeFileLocationDiagnostics(
@@ -943,6 +959,10 @@ function matchesType(
 
         case ValueType.NUMBER:
             return node.type === "number";
+
+
+        case ValueType.NUMBER_OR_STRING:
+            return node.type === "number" || node.type === "string";
 
 
         case ValueType.BOOLEAN:

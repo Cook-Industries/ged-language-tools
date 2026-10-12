@@ -30,7 +30,7 @@ export const MODAL: ElementDefinition = {
 
         closeOnOverlayClick: {
             kind: PropertyKind.SCALAR,
-            type: ValueType.STRING,
+            type: ValueType.BOOLEAN,
             description: "if modal should be closed if clicked outside of it"
         },
 
