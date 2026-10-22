@@ -22,17 +22,10 @@ export const TABLE: ElementDefinition = {
             required: true
         },
 
-        columnNames: {
-            kind: PropertyKind.LIST,
-            type: ValueType.STRING,
-            description: "column names",
-            required: true
-        },
-
-        sortable: {
+        striped: {
             kind: PropertyKind.SCALAR,
             type: ValueType.BOOLEAN,
-            description: "sortable"
+            description: "every second row is highlighted (default: false)"
         },
 
         elementSourceIsList: ELEMENT_SOURCE_IS_LIST,
@@ -40,6 +33,7 @@ export const TABLE: ElementDefinition = {
     },
 
     allowedChildren: [
+        ElementTypes.SUBTYPE_TABLE_COLUMN,
         ElementTypes.SUBTYPE_TABLE_ROW,
         ElementTypes.CONTROL_COMPONENT
     ]
