@@ -31,6 +31,7 @@ export const HIDDEN: ElementDefinition = {
         ElementTypes.CONTAINER_LINK,
         ElementTypes.CONTAINER_SPLITTED,
         ElementTypes.CONTAINER_SVG,
+        ElementTypes.CONTAINER_TABBED,
         ElementTypes.CONTAINER_TABLE,
         ElementTypes.CONTAINER_TEXT,
         ElementTypes.CONTAINER_HEADING,

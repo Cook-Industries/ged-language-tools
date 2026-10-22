@@ -87,6 +87,7 @@ export const MODAL: ElementDefinition = {
         ElementTypes.CONTAINER_LINK,
         ElementTypes.CONTAINER_TEXT,
         ElementTypes.CONTAINER_HEADING,
+        ElementTypes.CONTAINER_TABBED,
         ElementTypes.CONTAINER_TABLE,
         ElementTypes.CONTROL_COMPONENT
     ]

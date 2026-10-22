@@ -30,6 +30,7 @@ import { MODAL } from "./elements/ContainerModal";
 import { SPLITTED } from "./elements/ContainerSplitted";
 import { SVG } from "./elements/ContainerSVG";
 import { SVG_TEXT } from "./elements/SVGText";
+import { TAB } from "./elements/SubtypeTab";
 import { TABBED } from "./elements/ContainerTabbed";
 import { TABLE } from "./elements/ContainerTable";
 import { TABLE_COLUMN } from "./elements/SubtypeTableColumn";
@@ -71,6 +72,7 @@ export enum ElementTypes {
     INPUT_TEXTFIELD = "input-textfield",
     SUBTYPE_BURGER_ITEM = "subtype-burger-item",
     SUBTYPE_INPUT_VALUE = "subtype-input-value",
+    SUBTYPE_TAB = "subtype-tab",
     SUBTYPE_TABLE_COLUMN = "subtype-table-column",
     SUBTYPE_TABLE_ROW = "subtype-table-row",
     SVG_TEXT = "svg-text"
@@ -110,6 +112,7 @@ export const TypeRegistry: Record<string, ElementDefinition> = {
     [ElementTypes.INPUT_TEXTFIELD]: INPUT_TEXTFIELD,
     [ElementTypes.SUBTYPE_BURGER_ITEM]: BURGER_ITEM,
     [ElementTypes.SUBTYPE_INPUT_VALUE]: INPUT_VALUE,
+    [ElementTypes.SUBTYPE_TAB]: TAB,
     [ElementTypes.SUBTYPE_TABLE_COLUMN]: TABLE_COLUMN,
     [ElementTypes.SUBTYPE_TABLE_ROW]: TABLE_ROW,
     [ElementTypes.SVG_TEXT]: SVG_TEXT
