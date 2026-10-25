@@ -16,6 +16,14 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - InputTextfield: parameter onKeydown
 - InputTextarea: parameters onKeydown, rows, cols
 - Setting ignoredPaths: skips validation for matching files
+- SubtypeTableColumn: columns of a table with name, sortable, sortType, sortBy, defaultSort and tooltip
+- ContainerTable: parameter striped
+- SubtypeTab: tabs of a tabbed container with name, tooltip, selected and disabled
+- ContainerTabbed: parameters position and elementSourceIsList, tab children
+
+### Changed
+
+- ContainerContent, ContainerHidden, ContainerSplitted, ContainerModal: tabbed allowed as child
 
 ### Fixed
 
