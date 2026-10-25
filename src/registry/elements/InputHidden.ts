@@ -23,6 +23,12 @@ export const INPUT_HIDDEN: ElementDefinition = {
             kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
             description: "text"
+        },
+
+        signed: {
+            kind: PropertyKind.SCALAR,
+            type: ValueType.BOOLEAN,
+            description: "the value is sent with a signature and can be checked for changes on submit (default: false)"
         }
     },
 

@@ -20,6 +20,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - ContainerTable: parameter striped
 - SubtypeTab: tabs of a tabbed container with name, tooltip, selected and disabled
 - ContainerTabbed: parameters position and elementSourceIsList, tab children
+- InputHidden: parameter signed
 
 ### Changed
 
