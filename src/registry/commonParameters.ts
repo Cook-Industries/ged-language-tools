@@ -46,7 +46,7 @@ export const INPUT_DISABLED: ParameterDefinition = {
 
 export const INPUT_ONINPUT: ParameterDefinition = {
     kind: PropertyKind.SCALAR,
-    type: ValueType.STRING,
+    type: ValueType.FUNCTION,
     description: "function call to trigger on any input (except enter) press"
 };
 

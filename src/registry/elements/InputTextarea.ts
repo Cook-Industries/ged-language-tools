@@ -29,7 +29,7 @@ export const INPUT_TEXTAREA: ElementDefinition = {
 
         onKeydown: {
             kind: PropertyKind.SCALAR,
-            type: ValueType.STRING,
+            type: ValueType.FUNCTION,
             description: "function call to trigger on any key press"
         },
 

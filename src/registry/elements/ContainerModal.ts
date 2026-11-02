@@ -44,7 +44,7 @@ export const MODAL: ElementDefinition = {
 
         btnLeftFunction: {
             kind: PropertyKind.SCALAR,
-            type: ValueType.STRING,
+            type: ValueType.FUNCTION,
             description: "function on the left button"
         },
 
@@ -58,7 +58,7 @@ export const MODAL: ElementDefinition = {
 
         btnCenterFunction: {
             kind: PropertyKind.SCALAR,
-            type: ValueType.STRING,
+            type: ValueType.FUNCTION,
             description: "function on the center button"
         },
 
@@ -74,7 +74,7 @@ export const MODAL: ElementDefinition = {
 
         btnRightFunction: {
             kind: PropertyKind.SCALAR,
-            type: ValueType.STRING,
+            type: ValueType.FUNCTION,
             description: "function on the right button"
         },
 

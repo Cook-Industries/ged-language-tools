@@ -12,6 +12,7 @@ export enum ValueType {
     NUMBER = "number",
     NUMBER_OR_STRING = "number or string",
     BOOLEAN = "boolean",
+    FUNCTION = "function",
 }
 
 export enum PropertyState {

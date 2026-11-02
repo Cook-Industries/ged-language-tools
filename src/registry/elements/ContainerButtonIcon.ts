@@ -23,9 +23,8 @@ export const BUTTON_ICON: ElementDefinition = {
 
         onClick: {
             kind: PropertyKind.SCALAR,
-            type: ValueType.STRING,
-            description: "onClick function",
-            required: true
+            type: ValueType.FUNCTION,
+            description: "onClick function"
         },
 
         alt: {

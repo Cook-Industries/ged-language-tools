@@ -22,7 +22,7 @@ All of the above automatically respect the configured library version.
 
 ![Context aware children auto-complete](images/context-aware-children.gif)
 
-It also is type aware and flags wrong parameter types.
+It also is type aware and flags wrong parameter types. Event parameters (`onClick`, `onInput`, `onKeydown`, `btnLeftFunction`, `btnCenterFunction`, `btnRightFunction`) only accept a `$$function$` token.
 
 > Note: this only works for hardcoded parameter inside the JSON struct. Parameters that get replaced via dynamic `$$value$` placeholders cannot be checked this way.
 

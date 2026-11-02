@@ -292,13 +292,17 @@ export class GedCompletionProvider
             return undefined;
         }
 
+        const range = this.stringInterior(valueNode, document);
+
+        if (parameterDefinition.kind === PropertyKind.SCALAR && parameterDefinition.type === ValueType.FUNCTION) {
+            return [this.makeValueItem("$$function$", "function token", range)];
+        }
+
         const values = resolveSupportedEnumValues(parameterDefinition, version);
 
         if (values.length === 0) {
             return undefined;
         }
-
-        const range = this.stringInterior(valueNode, document);
 
         return values.map((value) => this.makeValueItem(String(value), undefined, range));
     }
@@ -601,6 +605,9 @@ export class GedCompletionProvider
 
             case ValueType.STRING:
                 return `""`;
+
+            case ValueType.FUNCTION:
+                return `"$$function$"`;
 
             case ValueType.BOOLEAN:
                 return "false";

@@ -804,6 +804,13 @@ function validateParameterValue(
     version: VersionString,
 ): void {
 
+    if (definition.kind === PropertyKind.SCALAR && definition.type === ValueType.FUNCTION) {
+
+        validateFunctionValue(name, node, document, diagnostics);
+
+        return;
+    }
+
     if (checkForReplacementValue(node, document, diagnostics)) {
         return;
     }
@@ -975,6 +982,31 @@ function matchesType(
 }
 
 /**
+ * Checks that a parameter of type FUNCTION holds a "$$function$name" token.
+ * The library accepts nothing else there, another value fails the element
+ * when the page is rendered.
+ */
+function validateFunctionValue(
+    name: string,
+    node: json.Node,
+    document: vscode.TextDocument,
+    diagnostics: vscode.Diagnostic[],
+): void {
+
+    const replacement = node.type === "string" ? parseReplacementValue(node.value as string) : null;
+
+    if (!replacement || replacement.identifier !== "function") {
+
+        addDiagnostic(
+            document,
+            diagnostics,
+            node,
+            `Parameter "${name}" must be a $$function$<name> token.`,
+        );
+    }
+}
+
+/**
  * Checks whether a string node is a "$$identifier$name" replacement value.
  * If it is, it's exempt from normal type/enum checks (its real value is
  * resolved elsewhere) — but the identifier keyword itself still gets
@@ -1006,7 +1038,7 @@ function checkForReplacementValue(
             document,
             diagnostics,
             node,
-            `Unknown replacement identifier "${replacement.identifier}". Expected one of: value, text, function.`,
+            `Unknown replacement identifier "${replacement.identifier}". Expected one of: value, text, function, class.`,
         );
     }
 
