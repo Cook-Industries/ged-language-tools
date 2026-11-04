@@ -21,6 +21,12 @@ export const IMAGE: ElementDefinition = {
             required: true
         },
 
+        alt: {
+            kind: PropertyKind.SCALAR,
+            type: ValueType.STRING,
+            description: "text that replaces the image, empty marks it as decorative"
+        },
+
         tooltip: TOOLTIP,
         elementSourceIsList: ELEMENT_SOURCE_IS_LIST,
         elementSource: ELEMENT_SOURCE

@@ -12,6 +12,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - ContainerBurger: parameter btnClass
 - SubtypeBurgerItem: parameter iconSize
 - ContainerButtonIcon: parameter alt
+- ContainerImage: parameter alt
 - ContainerContent: parameter direction
 - InputTextfield: parameter onKeydown
 - InputTextarea: parameters onKeydown, rows, cols
