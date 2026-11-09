@@ -1,11 +1,13 @@
 const REPLACEMENT_IDENTIFIERS = ["value", "text", "function", "class"] as const;
 type ReplacementIdentifier = typeof REPLACEMENT_IDENTIFIERS[number];
 
-const REPLACEMENT_PATTERN = /^\$\$(?<identifier>[A-Za-z]+)\$(?<name>[A-Za-z_][A-Za-z0-9_\-]*)$/;
+const REPLACEMENT_PATTERN =
+    /^\$\$(?<identifier>[A-Za-z]+)\$(?<name>[A-Za-z_][A-Za-z0-9_\-]*)(?:\|(?<values>[A-Za-z_][A-Za-z0-9_\-]*))?$/;
 
 export interface ParsedReplacement {
     identifier: string;
     name: string;
+    values?: string;
     isValidIdentifier: boolean;
 }
 
@@ -21,11 +23,12 @@ export function parseReplacementValue(raw: string): ParsedReplacement | null {
         return null;
     }
 
-    const { identifier, name } = match.groups;
+    const { identifier, name, values } = match.groups;
 
     return {
         identifier,
         name,
+        values,
         isValidIdentifier: (REPLACEMENT_IDENTIFIERS as readonly string[]).includes(identifier),
     };
 }

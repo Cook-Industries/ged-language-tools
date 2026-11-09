@@ -22,10 +22,14 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - SubtypeTab: tabs of a tabbed container with name, tooltip, selected and disabled
 - ContainerTabbed: parameters position and elementSourceIsList, tab children
 - InputHidden: parameter signed
+- Replacement values: $$text$<key>|<name> names the token value with the placeholder values of the text
+- InputGroup: input_group with name, groupKey, mode, direction and tooltip, children limited to date, number, radio, select, tag, textarea and textfield
+- InputSelect: parameter placeholder
 
 ### Changed
 
 - ContainerContent, ContainerHidden, ContainerSplitted, ContainerModal: tabbed allowed as child
+- ContainerForm: input_group allowed as child
 - ContainerButton, ContainerButtonIcon, ContainerModal, InputTextfield, InputTextarea, inputs with onInput: event parameters only accept a $$function$ token
 - ContainerButton, ContainerButtonIcon: parameter onClick is optional
 

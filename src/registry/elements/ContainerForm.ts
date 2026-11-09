@@ -40,6 +40,7 @@ export const FORM: ElementDefinition = {
         ElementTypes.INPUT_CHECKBOX,
         ElementTypes.INPUT_DATE,
         ElementTypes.INPUT_FILE,
+        ElementTypes.INPUT_GROUP,
         ElementTypes.INPUT_HIDDEN,
         ElementTypes.INPUT_NUMBER,
         ElementTypes.INPUT_PASSWORD,

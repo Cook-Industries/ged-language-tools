@@ -13,6 +13,7 @@ import { IMAGE } from "./elements/ContainerImage";
 import { INPUT_CHECKBOX } from "./elements/InputCheckbox";
 import { INPUT_DATE } from "./elements/InputDate";
 import { INPUT_FILE } from "./elements/InputFile";
+import { INPUT_GROUP } from "./elements/InputGroup";
 import { INPUT_HIDDEN } from "./elements/InputHidden";
 import { INPUT_NUMBER } from "./elements/InputNumber";
 import { INPUT_PASSWORD } from "./elements/InputPassword";
@@ -59,6 +60,7 @@ export enum ElementTypes {
     INPUT_CURRENCY = "input-currency",
     INPUT_DATE = "input-date",
     INPUT_FILE = "input-file",
+    INPUT_GROUP = "input-group",
     INPUT_HIDDEN = "input-hidden",
     INPUT_NUMBER = "input-number",
     INPUT_PASSWORD = "input-password",
@@ -99,6 +101,7 @@ export const TypeRegistry: Record<string, ElementDefinition> = {
     [ElementTypes.INPUT_CHECKBOX]: INPUT_CHECKBOX,
     [ElementTypes.INPUT_DATE]: INPUT_DATE,
     [ElementTypes.INPUT_FILE]: INPUT_FILE,
+    [ElementTypes.INPUT_GROUP]: INPUT_GROUP,
     [ElementTypes.INPUT_HIDDEN]: INPUT_HIDDEN,
     [ElementTypes.INPUT_NUMBER]: INPUT_NUMBER,
     [ElementTypes.INPUT_PASSWORD]: INPUT_PASSWORD,

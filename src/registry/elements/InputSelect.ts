@@ -45,6 +45,12 @@ export const INPUT_SELECT: ElementDefinition = {
             kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
             description: "name of a InputValueList source or if emtpy use children of this element"
+        },
+
+        placeholder: {
+            kind: PropertyKind.SCALAR,
+            type: ValueType.STRING,
+            description: "text of an option with an empty value before the options - selected if value matches no option"
         }
     },
 

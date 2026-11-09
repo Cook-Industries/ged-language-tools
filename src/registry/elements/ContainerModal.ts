@@ -25,7 +25,8 @@ export const MODAL: ElementDefinition = {
         requestUrl: {
             kind: PropertyKind.SCALAR,
             type: ValueType.STRING,
-            description: "url for transmission"
+            description: "url for transmission",
+            required: true
         },
 
         closeOnOverlayClick: {

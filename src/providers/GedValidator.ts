@@ -1042,5 +1042,15 @@ function checkForReplacementValue(
         );
     }
 
+    if (replacement.values !== undefined && replacement.identifier !== "text") {
+
+        addDiagnostic(
+            document,
+            diagnostics,
+            node,
+            `Only a $$text$ token takes placeholder values, "|${replacement.values}" is not allowed for $$${replacement.identifier}$.`,
+        );
+    }
+
     return true;
 }
