@@ -309,6 +309,10 @@ function validateTree(
         parentType
     );
 
+    if (definition.type === "input_group") {
+        validateInputGroupMembers(node, document, diagnostics);
+    }
+
 
     //
     // This node is now resolved.
@@ -340,6 +344,66 @@ function validateTree(
             definitionKey
         );
     }
+}
+
+/**
+ * Checks the inputs written directly in an input_group. The inputs of a component are not visible here,
+ * the library checks them while rendering.
+ */
+function validateInputGroupMembers(
+    node: json.Node,
+    document: vscode.TextDocument,
+    diagnostics: vscode.Diagnostic[],
+): void {
+
+    const groupKeyNode = getParameterNode(node, "groupKey");
+
+    const groupKey =
+        groupKeyNode?.type === "string" && !parseReplacementValue(groupKeyNode.value as string)
+            ? (groupKeyNode.value as string)
+            : undefined;
+
+    const childrenNode = getProperty(node, "children")?.children?.[1];
+
+    for (const child of childrenNode?.children ?? []) {
+
+        const mandatoryNode = getParameterNode(child, "mandatory");
+
+        if (mandatoryNode?.type === "boolean" && mandatoryNode.value === true) {
+
+            addDiagnostic(
+                document,
+                diagnostics,
+                mandatoryNode,
+                `Parameter "mandatory" is not allowed for an input of an input_group, the group marks the requirement.`,
+            );
+        }
+
+        const submitAsNode = getParameterNode(child, "submitAs");
+
+        if (groupKey !== undefined && submitAsNode?.type === "string" && submitAsNode.value === groupKey) {
+
+            addDiagnostic(
+                document,
+                diagnostics,
+                submitAsNode,
+                `Parameter "submitAs" must differ from the groupKey "${groupKey}" of the input_group.`,
+            );
+        }
+    }
+}
+
+/**
+ * Find the value node of a parameter.
+ */
+function getParameterNode(
+    node: json.Node,
+    name: string,
+): json.Node | undefined {
+
+    const parametersNode = getProperty(node, "parameters")?.children?.[1];
+
+    return parametersNode ? getProperty(parametersNode, name)?.children?.[1] : undefined;
 }
 
 /**

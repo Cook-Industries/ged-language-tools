@@ -27,6 +27,11 @@ import { INPUT_TEXTBOX } from "./elements/InputTextbox";
 import { INPUT_TEXTFIELD } from "./elements/InputTextfield";
 import { INPUT_VALUE } from "./elements/SubtypeInputValue";
 import { LINK } from "./elements/ContainerLink";
+import { MENU } from "./elements/SubtypeMenu";
+import { MENU_ITEM } from "./elements/SubtypeMenuItem";
+import { MENU_LINK } from "./elements/SubtypeMenuLink";
+import { MENU_SEPARATOR } from "./elements/SubtypeMenuSeparator";
+import { MENUBAR } from "./elements/ContainerMenubar";
 import { MODAL } from "./elements/ContainerModal";
 import { SPLITTED } from "./elements/ContainerSplitted";
 import { SVG } from "./elements/ContainerSVG";
@@ -49,6 +54,7 @@ export enum ElementTypes {
     CONTAINER_HIDDEN = "container-hidden",
     CONTAINER_IMAGE = "container-image",
     CONTAINER_LINK = "container-link",
+    CONTAINER_MENUBAR = "container-menubar",
     CONTAINER_MODAL = "container-modal",
     CONTAINER_SPLITTED = "container-splitted",
     CONTAINER_SVG = "container-svg",
@@ -74,6 +80,10 @@ export enum ElementTypes {
     INPUT_TEXTFIELD = "input-textfield",
     SUBTYPE_BURGER_ITEM = "subtype-burger-item",
     SUBTYPE_INPUT_VALUE = "subtype-input-value",
+    SUBTYPE_MENU = "subtype-menu",
+    SUBTYPE_MENU_ITEM = "subtype-menu-item",
+    SUBTYPE_MENU_LINK = "subtype-menu-link",
+    SUBTYPE_MENU_SEPARATOR = "subtype-menu-separator",
     SUBTYPE_TAB = "subtype-tab",
     SUBTYPE_TABLE_COLUMN = "subtype-table-column",
     SUBTYPE_TABLE_ROW = "subtype-table-row",
@@ -91,6 +101,7 @@ export const TypeRegistry: Record<string, ElementDefinition> = {
     [ElementTypes.CONTAINER_HIDDEN]: HIDDEN,
     [ElementTypes.CONTAINER_IMAGE]: IMAGE,
     [ElementTypes.CONTAINER_LINK]: LINK,
+    [ElementTypes.CONTAINER_MENUBAR]: MENUBAR,
     [ElementTypes.CONTAINER_MODAL]: MODAL,
     [ElementTypes.CONTAINER_SPLITTED]: SPLITTED,
     [ElementTypes.CONTAINER_SVG]: SVG,
@@ -115,6 +126,10 @@ export const TypeRegistry: Record<string, ElementDefinition> = {
     [ElementTypes.INPUT_TEXTFIELD]: INPUT_TEXTFIELD,
     [ElementTypes.SUBTYPE_BURGER_ITEM]: BURGER_ITEM,
     [ElementTypes.SUBTYPE_INPUT_VALUE]: INPUT_VALUE,
+    [ElementTypes.SUBTYPE_MENU]: MENU,
+    [ElementTypes.SUBTYPE_MENU_ITEM]: MENU_ITEM,
+    [ElementTypes.SUBTYPE_MENU_LINK]: MENU_LINK,
+    [ElementTypes.SUBTYPE_MENU_SEPARATOR]: MENU_SEPARATOR,
     [ElementTypes.SUBTYPE_TAB]: TAB,
     [ElementTypes.SUBTYPE_TABLE_COLUMN]: TABLE_COLUMN,
     [ElementTypes.SUBTYPE_TABLE_ROW]: TABLE_ROW,

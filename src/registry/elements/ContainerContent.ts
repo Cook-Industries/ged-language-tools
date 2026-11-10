@@ -44,6 +44,7 @@ export const CONTENT: ElementDefinition = {
         ElementTypes.CONTAINER_HIDDEN,
         ElementTypes.CONTAINER_IMAGE,
         ElementTypes.CONTAINER_LINK,
+        ElementTypes.CONTAINER_MENUBAR,
         ElementTypes.CONTAINER_SPLITTED,
         ElementTypes.CONTAINER_SVG,
         ElementTypes.CONTAINER_TABBED,
